@@ -49,6 +49,7 @@ class ThermalAvg:
     def onemodewvfn(self):
         #the one mode exicted wave function thermal average means two things:
         #1, the operator group should have non-zero first element. 
+        #following this rule we need to calculate the pairing scheme afterwards cause we leave out the equavalent terms here.
         #2, the difference group should have non-zero first element and zero rest elements.
         fc3rd1mode = []
         diff3rd1mode = []
@@ -61,38 +62,44 @@ class ThermalAvg:
                 diff3rd1mode.append(self.diff3rd_origin[i])
         #do it
         numorder = 3
+
         for i in range(len(diff3rd1mode)):
             for j in range(len(fc3rd1mode)):
                 valueofeachmode = 1
                 for modeidx in range(numorder):
                     tempvalue = self.Dx_Qm(diff3rd1mode[i],fc3rd1mode[j],modeidx)
-                    tempvaluesub1 = tempvalue.subs(self.BornHuangrules[modeidx])#sub DxQm 
-                    tempvaluesub2 = tempvaluesub1.subs(self.BornHuangrules[4])#sub Dx itself
-                    if (tempvaluesub2 == 0 ):
+                    tempvalue2 = self.BornHuangrules[tempvalue] #instead of using sym.subs I use dictionary replacement directly because it is faster and no other case will be left out
+                    valueofeachmode *= tempvalue2
+                    if (tempvalue2 == 0 ):
                         valueofeachmode = 0
                         break
                 if (valueofeachmode != 0):
                     print("found")
-                    print(diff3rd1mode[i],fc3rd1mode[j])
+                    print(i,j,diff3rd1mode[i],fc3rd1mode[j])
+                    sym.pprint(valueofeachmode)
+        #XXX: 1, create a class for data structure (diff, fc, expression)
+        # 2, merge those with same diff in the same class, and iterate between them and obtain <Phi|V|Phi>**2
+        #3, merge again those with reverse sign in the diff in the same class, this is the last step for merging
+        #4, do pairing scheme calculation for each term in each classes.
+        #5, output each term with same diff(same class) in the latex style.
 
+    #helper function to evaluate the Dx_Qm expression by substituting 
     def Dx_Qm(self,diff,fc,modeidx):
         eachDxQm = self.diffsymlst[diff[modeidx]]*self.operatorlst[modeidx]**fc[modeidx]
         return eachDxQm
 
-        
-
-
+    #rules for substituting Im with fm
     def thermAvghelper(self,Qm,Im,fm):
         tempdict = {Im:fm,Im**2:fm*(fm+2),Im**3:fm*(6*fm**2+6*fm+1),Im**4:24*fm**4+36*fm**3+14*fm**2+fm}
         return tempdict
-
+    
     def thermAvgeval(self):
         #Im -> fm
         lstofthermalAvg = []
         for i in range(len(self.operatorlst)):
             lstofthermalAvg.append(self.thermAvghelper(self.operatorlst[i],self.qtnumberlst[i],self.BEfactorlst[i]))
         return lstofthermalAvg
-
+    #rules for substituting Dx_Qm with Im and wm
     def BHrulehelper(self,Qm,Im,wm):
         tempdict = {D0*Qm:0,D0*Qm**2:(Im+sym.Rational(1,2))/wm,D0*Qm**3:0,D0*Qm**4:(6*Im*(Im+1)+3)/wm/wm*sym.Rational(1,4),
                     D1*Qm:sym.sqrt((Im+1)/wm*sym.Rational(1,2)),D1*Qm**2:0,D1*Qm**3:3*((Im+1)/wm*sym.Rational(1,2))**sym.Rational(3,2),D1*Qm**4:0,
@@ -107,11 +114,11 @@ class ThermalAvg:
 
     def BHruleeval(self):
         #Dx*Qm**y - > Im
-        lstofBHdict = []
+        dictofBHdict ={} 
         for i in range(len(self.operatorlst)):
-            lstofBHdict.append(self.BHrulehelper(self.operatorlst[i],self.qtnumberlst[i],self.freqlst[i]))
-        lstofBHdict.append({D0:1,D1:0,D2:0,D3:0,D4:0,D1n:0,D2n:0,D3n:0,D4n:0})
-        return lstofBHdict
+            dictofBHdict.update(self.BHrulehelper(self.operatorlst[i],self.qtnumberlst[i],self.freqlst[i]))
+        dictofBHdict.update({D0:1,D1:0,D2:0,D3:0,D4:0,D1n:0,D2n:0,D3n:0,D4n:0})
+        return dictofBHdict
 
 
     def diffgen(self):
