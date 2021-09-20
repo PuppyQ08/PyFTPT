@@ -77,6 +77,7 @@ class ThermalAvg:
                     print("found")
                     print(i,j,diff3rd1mode[i],fc3rd1mode[j])
                     sym.pprint(valueofeachmode)
+
         #XXX: 1, create a class for data structure (diff, fc, expression)
         # 2, merge those with same diff in the same class, and iterate between them and obtain <Phi|V|Phi>**2
         #3, merge again those with reverse sign in the diff in the same class, this is the last step for merging
