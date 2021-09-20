@@ -1,5 +1,7 @@
 import sympy as sym
 import itertools
+sys.path.append(".")
+from listofPTterms import ListofPTterms
 
 Ii = sym.symbols('Ii')
 Ij = sym.symbols('Ij')
@@ -62,7 +64,7 @@ class ThermalAvg:
                 diff3rd1mode.append(self.diff3rd_origin[i])
         #do it
         numorder = 3
-
+        lstofPTterms = []
         for i in range(len(diff3rd1mode)):
             for j in range(len(fc3rd1mode)):
                 valueofeachmode = 1
@@ -77,6 +79,17 @@ class ThermalAvg:
                     print("found")
                     print(i,j,diff3rd1mode[i],fc3rd1mode[j])
                     sym.pprint(valueofeachmode)
+                    #for each new expression for diff and operator, fill in the same one if find one, otherwise add a new one.
+                    if (len(lstofPTterms)!=0):
+                        judge = 0
+                        for lstidx in range(len(lstofPTterms)):
+                            if (np.array_equal(np.array(lstofPTterms[lstidx].diff ),np.array(diff3rd1mode[i])):
+                                    lstofPTterms[lstidx].mergesamediff(ListofPTterms(diff3rd1mode[i],fc3rd1mode[j],valueofeachmode))
+                                    judge += 1
+                        if (!judge):
+                            listofPTterms.append(ListofPTterms(diff3rd1mode[i],fc3rd1mode[j],valueofeachmode))
+                    else:
+                        listofPTterms.append(ListofPTterms(diff3rd1mode[i],fc3rd1mode[j],valueofeachmode))
 
         #XXX: 1, create a class for data structure (diff, fc, expression)
         # 2, merge those with same diff in the same class, and iterate between them and obtain <Phi|V|Phi>**2
