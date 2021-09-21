@@ -78,9 +78,10 @@ class ThermalAvg:
                         valueofeachmode = 0
                         break
                 if (valueofeachmode != 0):
-                    print("found")
-                    print(i,j,diff3rd1mode[i],fc3rd1mode[j])
-                    sym.pprint(valueofeachmode)
+                    #print("found")
+                    #print(i,j,diff3rd1mode[i],fc3rd1mode[j])
+                    #sym.pprint(valueofeachmode)
+
                     #for each new expression for diff and operator, fill in the same one if find one, otherwise add a new one.
                     if (len(lstofPTterms)!=0):
                         judge = 0
@@ -92,16 +93,14 @@ class ThermalAvg:
                             lstofPTterms.append(ListofPTterms(diff3rd1mode[i],fc3rd1mode[j],valueofeachmode))
                     else:
                         lstofPTterms.append(ListofPTterms(diff3rd1mode[i],fc3rd1mode[j],valueofeachmode))
+        #  merge those with same diff in the same class, and iterate between them and obtain <Phi|V|Phi>**2
+        for each in lstofPTterms:
+            each.iterate_samediff()
 
+        for each in lstofPTterms:
+            each.printout(1)
+        # merge again those with reverse sign in the diff in the same class, this is the last step for merging
 
-            for each in lstofPTterms:
-                each.iterate_samediff()
-            #print(len(lstofPTterms))
-            #for each in lstofPTterms:
-            #    each.printout(0)
-        #XXX: 1, create a class for data structure (diff, fc, expression)
-        # 2, merge those with same diff in the same class, and iterate between them and obtain <Phi|V|Phi>**2
-        #3, merge again those with reverse sign in the diff in the same class, this is the last step for merging
         #4, do pairing scheme calculation for each term in each classes.
         #5, output each term with same diff(same class) in the latex style.
 

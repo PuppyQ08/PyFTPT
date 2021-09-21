@@ -51,26 +51,54 @@ class ListofPTterms:
             print("same diff merging running")
             self.fclst = self.fclst + fclst
             self.explst = self.explst + explst
-        elif (np.array_equal(np.array(self.diff),-1*np.array(diff))):
-            print("reverse diff merging running")
-            # TBD
         else:
             sys.exit("first merge need two terms with same diff")
+
+    def diffexp(self,iptlst):
+        #iptlst is (1,0,-1) -> wi-wk
+        diffexpreturn = 0
+        for i in range(len(iptlst)):
+            diffexpreturn += iptlst[i]*freqlst[i]
+        return diffexpreturn
+
+    def mergereversediff(self,PTterms):
+        fclst_sd = PTterms.fclst_samediff
+        explst_sd = PTterms.explst_samediff
+        self.fclst_final = []
+        self.explst_final = []
+        diff = PTterms.diff
+        if (np.array_equal(np.array(self.diff),-1*np.array(diff))):
+            print("reverse diff merging running")
+            for i in range(len(fclst_sd)):
+                if(np.array_equal(np.array(fclst_sd[i]),np.array(self.fclst_samediff[i])):
+                    #Here: we introduce the denomenator
+                    self.fclst_final.append(self.fclst_samediff/self.diffexp(self.diff)+fclst_sd[i]/self.diffexp(diff))
+        else:
+            sys.exit("second merge need two terms with reverse diff")
+
 
     #iterate through the fc and exp list to obtain <Phi|V|Phi>**2 only for second order now, probably generalize to third order in the future.
     def iterate_samediff(self):
         self.fc_samediff = []
         self.explst_samediff = []
-        for i in range(len(self.diff)):
-            for j in range(len(self.diff)):
-                self.fc_samediff.append(self.diff[i]+self.diff[j])
+        for i in range(len(self.fclst)):
+            for j in range(len(self.fclst)):
+                self.fc_samediff.append(self.fclst[i]+self.fclst[j])
                 self.explst_samediff.append(sym.simplify(self.explst[i]*self.explst[j]))
 
     def fclst_Qform(self,lstipt):
-        fcprintlst = [0]*len(lstipt)
-        for j in range(len(lstipt)):
-            #here fclst[i] is (1,0,2) like, so would be QiQk**2
-            fcprintlst[j] =self.operatorlst[j]**lstipt[j]
+        leng = len(lstipt)
+        fcprintlst = [0]*leng
+        if (leng<=4):
+            for j in range(leng):
+                #here fclst[i] is (1,0,2) like, so would be QiQk**2
+                fcprintlst[j] =self.operatorlst[j]**lstipt[j]
+        else:
+            #this is specifically for 3rd and 4th (max) order force constants, so I used this trick
+            for j in range(leng):
+                #here fclst_samediff[i] is (1,0,2,2,0,1) like, so would be QiQk**2 Qi**2 Qk
+                fcprintlst[j] =self.operatorlst[int(j%(leng/2))]**lstipt[j]
+
         return fcprintlst
 
     def printout(self,whichstage):
@@ -85,7 +113,8 @@ class ListofPTterms:
                 print("---------------")
         if(whichstage==1):
             for i in range(len(self.fc_samediff)):
-                print("The fc is", self.fc_samediff[i], " ",[self.operatorlst[x] for x in self.fc_samediff[i]])
+                fcprintlst = self.fclst_Qform(self.fc_samediff[i])
+                print("The fc is", self.fc_samediff[i], " ",fcprintlst)
                 print("The expression is", self.explst_samediff[i]) 
 
 
