@@ -1,5 +1,7 @@
 import sympy as sym
 import itertools
+import sys
+import numpy as np
 sys.path.append(".")
 from listofPTterms import ListofPTterms
 
@@ -83,14 +85,16 @@ class ThermalAvg:
                     if (len(lstofPTterms)!=0):
                         judge = 0
                         for lstidx in range(len(lstofPTterms)):
-                            if (np.array_equal(np.array(lstofPTterms[lstidx].diff ),np.array(diff3rd1mode[i])):
+                            if (np.array_equal(np.array(lstofPTterms[lstidx].diff ),np.array(diff3rd1mode[i]))):
                                     lstofPTterms[lstidx].mergesamediff(ListofPTterms(diff3rd1mode[i],fc3rd1mode[j],valueofeachmode))
                                     judge += 1
-                        if (!judge):
-                            listofPTterms.append(ListofPTterms(diff3rd1mode[i],fc3rd1mode[j],valueofeachmode))
+                        if (not judge):
+                            lstofPTterms.append(ListofPTterms(diff3rd1mode[i],fc3rd1mode[j],valueofeachmode))
                     else:
-                        listofPTterms.append(ListofPTterms(diff3rd1mode[i],fc3rd1mode[j],valueofeachmode))
+                        lstofPTterms.append(ListofPTterms(diff3rd1mode[i],fc3rd1mode[j],valueofeachmode))
 
+            for each in lstofPTterms:
+                each.printout(0)
         #XXX: 1, create a class for data structure (diff, fc, expression)
         # 2, merge those with same diff in the same class, and iterate between them and obtain <Phi|V|Phi>**2
         #3, merge again those with reverse sign in the diff in the same class, this is the last step for merging

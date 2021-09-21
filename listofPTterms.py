@@ -2,6 +2,31 @@ import numpy as np
 import sympy as sym
 import sys
 
+Ii = sym.symbols('Ii')
+Ij = sym.symbols('Ij')
+Ik = sym.symbols('Ik')
+Il = sym.symbols('Il')
+wi = sym.symbols('wi')
+wj = sym.symbols('wj')
+wk = sym.symbols('wk')
+wl = sym.symbols('wl')
+fi = sym.symbols('fi')
+fj = sym.symbols('fj')
+fk = sym.symbols('fk')
+fl = sym.symbols('fl')
+Qi = sym.symbols('Qi')
+Qj = sym.symbols('Qj')
+Qk = sym.symbols('Qk')
+Ql = sym.symbols('Ql')
+D0 = sym.symbols('D0')
+D1 = sym.symbols('D1')
+D2 = sym.symbols('D2')
+D3 = sym.symbols('D3')
+D4 = sym.symbols('D4')
+D1n = sym.symbols('D1n')
+D2n = sym.symbols('D2n')
+D3n = sym.symbols('D3n')
+D4n = sym.symbols('D4n')
 
 class ListofPTterms:
     def __init__(self,diff,fc,expression):
@@ -18,7 +43,7 @@ class ListofPTterms:
         self.explst = [expression]
 
     def mergesamediff(self,PTterms):
-        fclst = PTterms.fc
+        fclst = PTterms.fclst
         explst = PTterms.explst
         diff = PTterms.diff
         #check diff
@@ -26,7 +51,7 @@ class ListofPTterms:
             print("same diff merging running")
             self.fclst = self.fclst + fclst
             self.explst = self.explst + explst
-        else if (np.array_equal(np.array(self.diff),-1*np.array(diff))):
+        elif (np.array_equal(np.array(self.diff),-1*np.array(diff))):
             print("reverse diff merging running")
             # TBD
         else:
@@ -40,14 +65,17 @@ class ListofPTterms:
             for j in range(len(self.diff)):
                 self.fc_samediff.append(self.diff[i]+self.diff[j])
                 self.explst_samediff.append(sym.simplify(self.explst[i]*self.explst[j]))
+    def fclst_Qform(self,lstipt):
 
     def printout(self,whichstage):
         print("The diff is ",self.diff," ",[self.diffsymlst[x] for x in self.diff])
         print("each of corresponding terms")
         if(whichstage==0):
             for i in range(len(self.fclst)):
-                print("The fc is", self.fclst[i], " ",[self.operatorlst[x] for x in self.fclst[i]])
+                for j in range(len(self.fclst[i])):
+                    self.fclst[i][j]
                 print("The expression is", self.explst[i]) 
+                print("---------------")
         if(whichstage==1):
             for i in range(len(self.fc_samediff)):
                 print("The fc is", self.fc_samediff[i], " ",[self.operatorlst[x] for x in self.fc_samediff[i]])
