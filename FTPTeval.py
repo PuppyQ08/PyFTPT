@@ -93,8 +93,12 @@ class ThermalAvg:
                     else:
                         lstofPTterms.append(ListofPTterms(diff3rd1mode[i],fc3rd1mode[j],valueofeachmode))
 
+
             for each in lstofPTterms:
-                each.printout(0)
+                each.iterate_samediff()
+            #print(len(lstofPTterms))
+            #for each in lstofPTterms:
+            #    each.printout(0)
         #XXX: 1, create a class for data structure (diff, fc, expression)
         # 2, merge those with same diff in the same class, and iterate between them and obtain <Phi|V|Phi>**2
         #3, merge again those with reverse sign in the diff in the same class, this is the last step for merging

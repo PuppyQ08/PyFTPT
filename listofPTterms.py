@@ -65,15 +65,22 @@ class ListofPTterms:
             for j in range(len(self.diff)):
                 self.fc_samediff.append(self.diff[i]+self.diff[j])
                 self.explst_samediff.append(sym.simplify(self.explst[i]*self.explst[j]))
+
     def fclst_Qform(self,lstipt):
+        fcprintlst = [0]*len(lstipt)
+        for j in range(len(lstipt)):
+            #here fclst[i] is (1,0,2) like, so would be QiQk**2
+            fcprintlst[j] =self.operatorlst[j]**lstipt[j]
+        return fcprintlst
 
     def printout(self,whichstage):
+        print("++++++++++++++++++++++++++++++")
         print("The diff is ",self.diff," ",[self.diffsymlst[x] for x in self.diff])
         print("each of corresponding terms")
         if(whichstage==0):
             for i in range(len(self.fclst)):
-                for j in range(len(self.fclst[i])):
-                    self.fclst[i][j]
+                fcprintlst = self.fclst_Qform(self.fclst[i])
+                print("The fc is ",self.fclst[i]," ",fcprintlst)
                 print("The expression is", self.explst[i]) 
                 print("---------------")
         if(whichstage==1):
