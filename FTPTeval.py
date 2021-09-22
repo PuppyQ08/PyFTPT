@@ -42,6 +42,7 @@ class ThermalAvg:
         self.freqlst = [wi,wj,wk,wl]
         self.qtnumberlst = [Ii,Ij,Ik,Il]
         self.BEfactorlst = [fi,fj,fk,fl]
+        #D1 is : <..Ii..|V|..Ji..> Ji-Ii = 1 with denomenator of (-wi)
         self.diffsymlst = [D0,D1,D2,D3,D4,D4n,D3n,D2n,D1n]
         #two rules for substituding
         self.thermAverules = self.thermAvgeval()#return a list of dict
@@ -78,10 +79,6 @@ class ThermalAvg:
                         valueofeachmode = 0
                         break
                 if (valueofeachmode != 0):
-                    #print("found")
-                    #print(i,j,diff3rd1mode[i],fc3rd1mode[j])
-                    #sym.pprint(valueofeachmode)
-
                     #for each new expression for diff and operator, fill in the same one if find one, otherwise add a new one.
                     if (len(lstofPTterms)!=0):
                         judge = 0
@@ -96,13 +93,32 @@ class ThermalAvg:
         #  merge those with same diff in the same class, and iterate between them and obtain <Phi|V|Phi>**2
         for each in lstofPTterms:
             each.iterate_samediff()
-
-        for each in lstofPTterms:
-            each.printout(1)
         # merge again those with reverse sign in the diff in the same class, this is the last step for merging
+        lstofPTterms_revers = []
+        for i in range(len(lstofPTterms)):
+            if (len(lstofPTterms_revers) ==0):
+                lstofPTterms_revers.append(lstofPTterms[i])
+            else:
+                judge = 0
+                for j in range(len(lstofPTterms_revers)):
+                    if(np.array_equal(np.array(lstofPTterms[i].diff),-1*np.array(lstofPTterms_revers[j].diff))):
+                        judge +=1
+                        lstofPTterms_revers[j].mergereversediff(lstofPTterms[i])
+                if (judge ==0):
+                    lstofPTterms_revers.append(lstofPTterms[i])
+                #checking 
+                if (judge >1):
+                    sys.exit("There shouldn't be more than one reverse merge for the same term")
+        #4, substitute Im with fm.
+        for i in range(len(lstofPTterms_revers)):
+            lstofPTterms_revers[i].subsIm_fm(self.thermAverules)
 
-        #4, do pairing scheme calculation for each term in each classes.
-        #5, output each term with same diff(same class) in the latex style.
+
+        for each in lstofPTterms_revers:
+            each.printout(2)
+
+        #5, do pairing scheme calculation for each term in each classes.
+        #6, output each term with same diff(same class) in the latex style.
 
     #helper function to evaluate the Dx_Qm expression by substituting 
     def Dx_Qm(self,diff,fc,modeidx):
@@ -111,15 +127,16 @@ class ThermalAvg:
 
     #rules for substituting Im with fm
     def thermAvghelper(self,Qm,Im,fm):
-        tempdict = {Im:fm,Im**2:fm*(fm+2),Im**3:fm*(6*fm**2+6*fm+1),Im**4:24*fm**4+36*fm**3+14*fm**2+fm}
+        tempdict = {Im**4:24*fm**4+36*fm**3+14*fm**2+fm,Im**3:fm*(6*fm**2+6*fm+1),Im**2:fm*(fm+2),Im:fm}
         return tempdict
     
     def thermAvgeval(self):
         #Im -> fm
-        lstofthermalAvg = []
+        lstofthermalAvg ={} 
         for i in range(len(self.operatorlst)):
-            lstofthermalAvg.append(self.thermAvghelper(self.operatorlst[i],self.qtnumberlst[i],self.BEfactorlst[i]))
+            lstofthermalAvg.update(self.thermAvghelper(self.operatorlst[i],self.qtnumberlst[i],self.BEfactorlst[i]))
         return lstofthermalAvg
+
     #rules for substituting Dx_Qm with Im and wm
     def BHrulehelper(self,Qm,Im,wm):
         tempdict = {D0*Qm:0,D0*Qm**2:(Im+sym.Rational(1,2))/wm,D0*Qm**3:0,D0*Qm**4:(6*Im*(Im+1)+3)/wm/wm*sym.Rational(1,4),

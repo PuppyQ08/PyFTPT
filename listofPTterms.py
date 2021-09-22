@@ -55,35 +55,42 @@ class ListofPTterms:
             sys.exit("first merge need two terms with same diff")
 
     def diffexp(self,iptlst):
-        #iptlst is (1,0,-1) -> wi-wk
+        #iptlst is (1,0,-1) -> -wi+wk D1 is -1*wi
         diffexpreturn = 0
         for i in range(len(iptlst)):
-            diffexpreturn += iptlst[i]*freqlst[i]
+            diffexpreturn -= iptlst[i]*self.freqlst[i]
         return diffexpreturn
 
     def mergereversediff(self,PTterms):
         fclst_sd = PTterms.fclst_samediff
         explst_sd = PTterms.explst_samediff
-        self.fclst_final = []
-        self.explst_final = []
+        self.explst_revers = []
         diff = PTterms.diff
         if (np.array_equal(np.array(self.diff),-1*np.array(diff))):
             print("reverse diff merging running")
             for i in range(len(fclst_sd)):
-                if(np.array_equal(np.array(fclst_sd[i]),np.array(self.fclst_samediff[i])):
+                if(np.array_equal(np.array(fclst_sd[i]),np.array(self.fclst_samediff[i]))):
                     #Here: we introduce the denomenator
-                    self.fclst_final.append(self.fclst_samediff/self.diffexp(self.diff)+fclst_sd[i]/self.diffexp(diff))
+                    self.explst_revers.append(self.explst_samediff[i]/self.diffexp(self.diff)+explst_sd[i]/self.diffexp(diff))
         else:
             sys.exit("second merge need two terms with reverse diff")
+    #substitute Im with fm 
+    def subsIm_fm(self,thermAverules):
+        leng =len(self.explst_revers)
+        self.explst_fm = [0]*leng
+        #expand first:
+        for i in range(leng):
+            self.explst_fm[i] = sym.expand(sym.expand(self.explst_revers[i]).subs(thermAverules))
+
 
 
     #iterate through the fc and exp list to obtain <Phi|V|Phi>**2 only for second order now, probably generalize to third order in the future.
     def iterate_samediff(self):
-        self.fc_samediff = []
+        self.fclst_samediff = []
         self.explst_samediff = []
         for i in range(len(self.fclst)):
             for j in range(len(self.fclst)):
-                self.fc_samediff.append(self.fclst[i]+self.fclst[j])
+                self.fclst_samediff.append(self.fclst[i]+self.fclst[j])
                 self.explst_samediff.append(sym.simplify(self.explst[i]*self.explst[j]))
 
     def fclst_Qform(self,lstipt):
@@ -111,11 +118,21 @@ class ListofPTterms:
                 print("The fc is ",self.fclst[i]," ",fcprintlst)
                 print("The expression is", self.explst[i]) 
                 print("---------------")
+        #print the term after first merge of same diff. 
         if(whichstage==1):
-            for i in range(len(self.fc_samediff)):
-                fcprintlst = self.fclst_Qform(self.fc_samediff[i])
-                print("The fc is", self.fc_samediff[i], " ",fcprintlst)
+            for i in range(len(self.fclst_samediff)):
+                fcprintlst = self.fclst_Qform(self.fclst_samediff[i])
+                print("The fc is", self.fclst_samediff[i], " ",fcprintlst)
                 print("The expression is", self.explst_samediff[i]) 
+        #print the term after Im fm substitution.
+        if (whichstage == 2):
+            for i in range(len(self.fclst_samediff)):
+                fcprintlst = self.fclst_Qform(self.fclst_samediff[i])
+                print("The fc is", self.fclst_samediff[i], " ",fcprintlst)
+                print("The revers expression is", self.explst_revers[i]) 
+                print("The subs expression is", self.explst_fm[i]) 
+
+
 
 
     
