@@ -50,53 +50,52 @@ class ThermalAvg:
         #start with one mode excited wave function
         self.onemodewvfn()
 
-    def twomodewvfn(self):
-        #XXX TBD
 
     def onemodewvfn(self):
         #the one mode exicted wave function thermal average means two things:
-        #One, the operator group should have non-zero first element. 
+        #1, the operator group should have non-zero first element. 
         #following this rule we need to calculate the pairing scheme afterwards cause we leave out the equavalent terms here.
-        #Two, the difference group should have non-zero first element and zero rest elements.
+        #2, the difference group should have non-zero first element and zero rest elements.
         #need to specify the unnecessary index here.
         unnecesry = [1,2]
         fc3rd1mode = []
         diff3rd1mode = []
-        #1, get the diff and fc list under each condition, do 3rd first
+        #do 3rd first
         for i in range(len(self.fc3rd_origin)):
             if (self.fc3rd_origin[i][0] != 0):
                 fc3rd1mode.append(self.fc3rd_origin[i])
         for i in range(len(self.diff3rd_origin)):
             if (self.diff3rd_origin[i][0]!=0 and self.diff3rd_origin[i][1]==0 and self.diff3rd_origin[i][2]==0):
                 diff3rd1mode.append(self.diff3rd_origin[i])
-        #generalized function for the step 2-8
-        self.step2_8(unnecesry,diff3rd1mode,fc3rd1mode)
-
-def step2_8(self,unnecesry,diffiptlst,fciptlst):
-        #2, evaluate each term by Born huang rules and do first merge for terms with same diff
-        lstofPTterms = self.evalBH_firstmerge(diffiptlst,fciptlst)
-        #3,  merge those with same diff in the same class, and iterate between them and obtain <Phi|V|Phi>**2
+        #do it
+        numorder = 3
+        lstofPTterms = []
+        for i in range(len(diff3rd1mode)):
+            for j in range(len(fc3rd1mode)):
+                valueofeachmode = 1
+                for modeidx in range(numorder):
+                    tempvalue = self.Dx_Qm(diff3rd1mode[i],fc3rd1mode[j],modeidx)
+                    tempvalue2 = self.BornHuangrules[tempvalue] #instead of using sym.subs I use dictionary replacement directly because it is faster and no other case will be left out
+                    valueofeachmode *= tempvalue2
+                    if (tempvalue2 == 0 ):
+                        valueofeachmode = 0
+                        break
+                if (valueofeachmode != 0):
+                    #for each new expression for diff and operator, fill in the same one if find one, otherwise add a new one.
+                    if (len(lstofPTterms)!=0):
+                        judge = 0
+                        for lstidx in range(len(lstofPTterms)):
+                            if (np.array_equal(np.array(lstofPTterms[lstidx].diff ),np.array(diff3rd1mode[i]))):
+                                    lstofPTterms[lstidx].mergesamediff(ListofPTterms(diff3rd1mode[i],fc3rd1mode[j],valueofeachmode))
+                                    judge += 1
+                        if (not judge):
+                            lstofPTterms.append(ListofPTterms(diff3rd1mode[i],fc3rd1mode[j],valueofeachmode))
+                    else:
+                        lstofPTterms.append(ListofPTterms(diff3rd1mode[i],fc3rd1mode[j],valueofeachmode))
+        #  merge those with same diff in the same class, and iterate between them and obtain <Phi|V|Phi>**2
         for each in lstofPTterms:
             each.iterate_samediff()
-        #4, merge again those with reverse sign in the diff in the same class, this is the last step for merging
-        lstofPTterms_revers = self.reversMerge(lstofPTterms)
-        #5, substitute Im with fm.
-        for i in range(len(lstofPTterms_revers)):
-            lstofPTterms_revers[i].subsIm_fm(self.thermAverules)
-        #6, for each class with same diff, we need to filter out those terms equivalent algebraicly,like Qijj Qijj and  Qikk Qikk, the rule to do that is switching the unnecessary index like for one mode wave fn, k and l is the unnecessary one.
-        for i in range(len(lstofPTterms_revers)):
-            lstofPTterms_revers[i].filteroutovrlap(unnecesry)
-        #XXX TBD 7, do pairing scheme calculation for each term in each classes.
-        #for i in range(len(lstofPTterms_revers)):
-        #    lstofPTterms_revers[i].pair_scheme()
-
-
-        for each in lstofPTterms_revers:
-            each.printout(3)
-
-        #8, output each term with same diff(same class) in the latex style.
-
-    def reversMerge(self,lstofPTterms):
+        # merge again those with reverse sign in the diff in the same class, this is the last step for merging
         lstofPTterms_revers = []
         for i in range(len(lstofPTterms)):
             if (len(lstofPTterms_revers) ==0):
@@ -112,35 +111,18 @@ def step2_8(self,unnecesry,diffiptlst,fciptlst):
                 #checking 
                 if (judge >1):
                     sys.exit("There shouldn't be more than one reverse merge for the same term")
-        return lstofPTterms_revers
+        #4, substitute Im with fm.
+        for i in range(len(lstofPTterms_revers)):
+            lstofPTterms_revers[i].subsIm_fm(self.thermAverules)
+        #5, for each class with same diff, we need to filter out those terms equivalent algebraicly,like Qijj Qijj and  Qikk Qikk, the rule to do that is switching the unnecessary index like for one mode wave fn, k and l is the unnecessary one.
+        for i in range(len(lstofPTterms_revers)):
+            lstofPTterms_revers[i].filteroutovrlap(unnecesry)
 
-    def evalBH_firstmerge(self,diffipt,fcipt):
-        lstofPTterms = []
-        numorder= len(diffipt[0])
-        #here we evaluate all the combinations by Born-huang rules.
-        for i in range(len(diffipt)):
-            for j in range(len(fcipt)):
-                valueofeachmode = 1
-                for modeidx in range(numorder):
-                    tempvalue = self.Dx_Qm(diffipt[i],fcipt[j],modeidx)
-                    tempvalue2 = self.BornHuangrules[tempvalue] #instead of using sym.subs I use dictionary replacement directly because it is faster and no other case will be left out
-                    valueofeachmode *= tempvalue2
-                    if (tempvalue2 == 0 ):
-                        valueofeachmode = 0
-                        break
-                #First merge:for each new expression for diff and operator, fill in the same one if find one, otherwise add a new one.
-                if (valueofeachmode != 0):
-                    if (len(lstofPTterms)!=0):
-                        judge = 0
-                        for lstidx in range(len(lstofPTterms)):
-                            if (np.array_equal(np.array(lstofPTterms[lstidx].diff ),np.array(diffipt[i]))):
-                                    lstofPTterms[lstidx].mergesamediff(ListofPTterms(diffipt[i],fcipt[j],valueofeachmode))
-                                    judge += 1
-                        if (not judge):
-                            lstofPTterms.append(ListofPTterms(diffipt[i],fcipt[j],valueofeachmode))
-                    else:
-                        lstofPTterms.append(ListofPTterms(diffipt[i],fcipt[j],valueofeachmode))
-        return lstofPTterms
+        for each in lstofPTterms_revers:
+            each.printout(3)
+
+        #5, do pairing scheme calculation for each term in each classes.
+        #6, output each term with same diff(same class) in the latex style.
 
     #helper function to evaluate the Dx_Qm expression by substituting 
     def Dx_Qm(self,diff,fc,modeidx):

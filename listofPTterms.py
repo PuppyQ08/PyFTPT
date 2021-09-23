@@ -2,6 +2,7 @@ import numpy as np
 import sympy as sym
 import sys
 import itertools
+import math
 
 Ii = sym.symbols('Ii')
 Ij = sym.symbols('Ij')
@@ -42,6 +43,17 @@ class ListofPTterms:
         self.fclst = [fc]
         #expressions for each operator list
         self.explst = [expression]
+
+    #XXX leave this part first it is kind of messy and tricky. 
+    #like iijj is only with iijj ijij ijji three unique set.
+    #def pair_scheme():
+    #    self.pairschme = []
+    #    fcfactor = math.factorial(len(self.diff))**2
+    #    for i in range(len(fclst_filter)):
+    #        fclst_filter[i]
+
+            
+
 
     def mergesamediff(self,PTterms):
         fclst = PTterms.fclst
@@ -111,29 +123,33 @@ class ListofPTterms:
         return fcprintlst
     #go over the terms, and if the term has the same expression after switch the unnecesry index, then kill it.
     def filteroutovrlap(self,unnecesry):
-        allswitch = list(itertools.combinations(unnecesry,2))
-        self.fclst_filter = []
-        self.explst_fm_filter = []
-        for i in range(len(self.fclst_samediff)):
-            if (len(self.explst_fm_filter)== 0):
-                self.explst_fm_filter.append(self.explst_fm[i])
-                self.fclst_filter.append(self.fclst_samediff[i])
-            else:
-                judge = 0
-                for j in range(len(self.explst_fm_filter)):
-                    #play switching
-                    tempexp1 = self.explst_fm_filter[j]
-                    tempexp2 = self.explst_fm[i]
-                    for eachgp in allswitch:
-                        #switch each group of indexes.
-                        #both terms subs from eachgp[0] to eachgp[1],only take care of fm and wm
-                        tempexp1_sub = tempexp1.subs({self.BEfactorlst[eachgp[0]]:self.BEfactorlst[eachgp[1]],self.freqlst[eachgp[0]]:self.freqlst[eachgp[1]]})
-                        tempexp2_sub = tempexp2.subs({self.BEfactorlst[eachgp[0]]:self.BEfactorlst[eachgp[1]],self.freqlst[eachgp[0]]:self.freqlst[eachgp[1]]})
-                        if(tempexp1_sub.equals(tempexp2_sub)):
-                            judge +=1
-                if (judge == 0):
+        if (len(unnecesry)>1): 
+            allswitch = list(itertools.combinations(unnecesry,2))
+            self.fclst_filter = []
+            self.explst_fm_filter = []
+            for i in range(len(self.fclst_samediff)):
+                if (len(self.explst_fm_filter)== 0):
                     self.explst_fm_filter.append(self.explst_fm[i])
                     self.fclst_filter.append(self.fclst_samediff[i])
+                else:
+                    judge = 0
+                    for j in range(len(self.explst_fm_filter)):
+                        #play switching
+                        tempexp1 = self.explst_fm_filter[j]
+                        tempexp2 = self.explst_fm[i]
+                        for eachgp in allswitch:
+                            #switch each group of indexes.
+                            #both terms subs from eachgp[0] to eachgp[1],only take care of fm and wm
+                            tempexp1_sub = tempexp1.subs({self.BEfactorlst[eachgp[0]]:self.BEfactorlst[eachgp[1]],self.freqlst[eachgp[0]]:self.freqlst[eachgp[1]]})
+                            tempexp2_sub = tempexp2.subs({self.BEfactorlst[eachgp[0]]:self.BEfactorlst[eachgp[1]],self.freqlst[eachgp[0]]:self.freqlst[eachgp[1]]})
+                            if(tempexp1_sub.equals(tempexp2_sub)):
+                                judge +=1
+                    if (judge == 0):
+                        self.explst_fm_filter.append(self.explst_fm[i])
+                        self.fclst_filter.append(self.fclst_samediff[i])
+        else:
+            self.fclst_filter =self.fclst_samediff 
+            self.explst_fm_filter =self.explst_samediff
 
 
     def printout(self,whichstage):
