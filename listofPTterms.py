@@ -1,6 +1,7 @@
 import numpy as np
 import sympy as sym
 import sys
+import itertools
 
 Ii = sym.symbols('Ii')
 Ij = sym.symbols('Ij')
@@ -89,7 +90,8 @@ class ListofPTterms:
         self.fclst_samediff = []
         self.explst_samediff = []
         for i in range(len(self.fclst)):
-            for j in range(len(self.fclst)):
+            #don't need to recount the former one  so start with i
+            for j in range(i,len(self.fclst)):
                 self.fclst_samediff.append(self.fclst[i]+self.fclst[j])
                 self.explst_samediff.append(sym.simplify(self.explst[i]*self.explst[j]))
 
@@ -107,6 +109,32 @@ class ListofPTterms:
                 fcprintlst[j] =self.operatorlst[int(j%(leng/2))]**lstipt[j]
 
         return fcprintlst
+    #go over the terms, and if the term has the same expression after switch the unnecesry index, then kill it.
+    def filteroutovrlap(self,unnecesry):
+        allswitch = list(itertools.combinations(unnecesry,2))
+        self.fclst_filter = []
+        self.explst_fm_filter = []
+        for i in range(len(self.fclst_samediff)):
+            if (len(self.explst_fm_filter)== 0):
+                self.explst_fm_filter.append(self.explst_fm[i])
+                self.fclst_filter.append(self.fclst_samediff[i])
+            else:
+                judge = 0
+                for j in range(len(self.explst_fm_filter)):
+                    #play switching
+                    tempexp1 = self.explst_fm_filter[j]
+                    tempexp2 = self.explst_fm[i]
+                    for eachgp in allswitch:
+                        #switch each group of indexes.
+                        #both terms subs from eachgp[0] to eachgp[1],only take care of fm and wm
+                        tempexp1_sub = tempexp1.subs({self.BEfactorlst[eachgp[0]]:self.BEfactorlst[eachgp[1]],self.freqlst[eachgp[0]]:self.freqlst[eachgp[1]]})
+                        tempexp2_sub = tempexp2.subs({self.BEfactorlst[eachgp[0]]:self.BEfactorlst[eachgp[1]],self.freqlst[eachgp[0]]:self.freqlst[eachgp[1]]})
+                        if(tempexp1_sub.equals(tempexp2_sub)):
+                            judge +=1
+                if (judge == 0):
+                    self.explst_fm_filter.append(self.explst_fm[i])
+                    self.fclst_filter.append(self.fclst_samediff[i])
+
 
     def printout(self,whichstage):
         print("++++++++++++++++++++++++++++++")
@@ -131,6 +159,12 @@ class ListofPTterms:
                 print("The fc is", self.fclst_samediff[i], " ",fcprintlst)
                 print("The revers expression is", self.explst_revers[i]) 
                 print("The subs expression is", self.explst_fm[i]) 
+        if (whichstage == 3):
+            for i in range(len(self.fclst_filter)):
+                fcprintlst = self.fclst_Qform(self.fclst_filter[i])
+                print("The fc is", self.fclst_filter[i], " ",fcprintlst)
+                print("The final expression is", self.explst_fm_filter[i]) 
+
 
 
 

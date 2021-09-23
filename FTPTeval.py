@@ -56,6 +56,8 @@ class ThermalAvg:
         #1, the operator group should have non-zero first element. 
         #following this rule we need to calculate the pairing scheme afterwards cause we leave out the equavalent terms here.
         #2, the difference group should have non-zero first element and zero rest elements.
+        #need to specify the unnecessary index here.
+        unnecesry = [1,2]
         fc3rd1mode = []
         diff3rd1mode = []
         #do 3rd first
@@ -112,10 +114,12 @@ class ThermalAvg:
         #4, substitute Im with fm.
         for i in range(len(lstofPTterms_revers)):
             lstofPTterms_revers[i].subsIm_fm(self.thermAverules)
-
+        #5, for each class with same diff, we need to filter out those terms equivalent algebraicly,like Qijj Qijj and  Qikk Qikk, the rule to do that is switching the unnecessary index like for one mode wave fn, k and l is the unnecessary one.
+        for i in range(len(lstofPTterms_revers)):
+            lstofPTterms_revers[i].filteroutovrlap(unnecesry)
 
         for each in lstofPTterms_revers:
-            each.printout(2)
+            each.printout(3)
 
         #5, do pairing scheme calculation for each term in each classes.
         #6, output each term with same diff(same class) in the latex style.
