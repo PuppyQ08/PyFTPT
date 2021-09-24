@@ -50,7 +50,7 @@ class ThermalAvg:
         #start with one mode excited wave function
         self.onemodewvfn()
 
-    def twomodewvfn(self):
+    #def twomodewvfn(self):
         #XXX TBD
 
     def onemodewvfn(self):
