@@ -149,7 +149,7 @@ class ListofPTterms:
                         self.fclst_filter.append(self.fclst_samediff[i])
         else:
             self.fclst_filter =self.fclst_samediff 
-            self.explst_fm_filter =self.explst_samediff
+            self.explst_fm_filter =self.explst_fm
 
 
     def printout(self,whichstage):

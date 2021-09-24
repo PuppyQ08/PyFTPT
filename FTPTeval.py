@@ -48,10 +48,41 @@ class ThermalAvg:
         self.thermAverules = self.thermAvgeval()#return a list of dict
         self.BornHuangrules = self.BHruleeval()#return a list of dict
         #start with one mode excited wave function
-        self.onemodewvfn()
+        self.threemodewvfn()
 
-    #def twomodewvfn(self):
-        #XXX TBD
+    def threemodewvfn(self):
+        #the two mode exicted wave function :
+        #one, the operator with non-zero 1st 2nd 3rd terms because it is orthogonal
+        #two, the difference have non-zero 1st 2nd 3rd terms and zero rest
+        unnecesry = []
+        fc3rd3mode = []
+        diff3rd3mode = []
+        #1, get the diff and fc list under each condition, do 3rd first
+        for i in range(len(self.fc3rd_origin)):
+            if (self.fc3rd_origin[i][0] != 0 and self.fc3rd_origin[i][1] !=0 and self.fc3rd_origin[i][2] !=0):
+                fc3rd3mode.append(self.fc3rd_origin[i])
+        for i in range(len(self.diff3rd_origin)):
+            if (self.diff3rd_origin[i][0]!=0 and self.diff3rd_origin[i][1]!=0 and self.diff3rd_origin[i][2] !=0):
+                diff3rd3mode.append(self.diff3rd_origin[i])
+        #generalized function for the step 2-8
+        self.step2_8(unnecesry,diff3rd3mode,fc3rd3mode)
+
+    def twomodewvfn(self):
+        #the two mode exicted wave function :
+        #one, the operator with non-zero 1st 2nd terms because it is orthogonal
+        #two, the difference have non-zero 1st 2nd terms and zero rest 
+        unnecesry = [2]
+        fc3rd2mode = []
+        diff3rd2mode = []
+        #1, get the diff and fc list under each condition, do 3rd first
+        for i in range(len(self.fc3rd_origin)):
+            if (self.fc3rd_origin[i][0] != 0 and self.fc3rd_origin[i][1] !=0):
+                fc3rd2mode.append(self.fc3rd_origin[i])
+        for i in range(len(self.diff3rd_origin)):
+            if (self.diff3rd_origin[i][0]!=0 and self.diff3rd_origin[i][1]!=0 and self.diff3rd_origin[i][2]==0):
+                diff3rd2mode.append(self.diff3rd_origin[i])
+        #generalized function for the step 2-8
+        self.step2_8(unnecesry,diff3rd2mode,fc3rd2mode)
 
     def onemodewvfn(self):
         #the one mode exicted wave function thermal average means two things:
@@ -72,7 +103,7 @@ class ThermalAvg:
         #generalized function for the step 2-8
         self.step2_8(unnecesry,diff3rd1mode,fc3rd1mode)
 
-def step2_8(self,unnecesry,diffiptlst,fciptlst):
+    def step2_8(self,unnecesry,diffiptlst,fciptlst):
         #2, evaluate each term by Born huang rules and do first merge for terms with same diff
         lstofPTterms = self.evalBH_firstmerge(diffiptlst,fciptlst)
         #3,  merge those with same diff in the same class, and iterate between them and obtain <Phi|V|Phi>**2
@@ -89,8 +120,6 @@ def step2_8(self,unnecesry,diffiptlst,fciptlst):
         #XXX TBD 7, do pairing scheme calculation for each term in each classes.
         #for i in range(len(lstofPTterms_revers)):
         #    lstofPTterms_revers[i].pair_scheme()
-
-
         for each in lstofPTterms_revers:
             each.printout(3)
 
