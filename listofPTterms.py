@@ -3,7 +3,8 @@ import sympy as sym
 import sys
 import itertools
 import math
-
+#Ii-Il can't be set to as positive True and real True because:
+#when substitue Im with fm, it will do like Im = sqrt(Im**2)replacement
 Ii = sym.symbols('Ii')
 Ij = sym.symbols('Ij')
 Ik = sym.symbols('Ik')
@@ -16,19 +17,19 @@ fi = sym.symbols('fi')
 fj = sym.symbols('fj')
 fk = sym.symbols('fk')
 fl = sym.symbols('fl')
-Qi = sym.symbols('Qi',positive=True,real=True)
-Qj = sym.symbols('Qj',positive=True,real=True)
-Qk = sym.symbols('Qk',positive=True,real=True)
-Ql = sym.symbols('Ql',positive=True,real=True)
-D0 = sym.symbols('D0',positive=True,real=True)
-D1 = sym.symbols('D1',positive=True,real=True)
-D2 = sym.symbols('D2',positive=True,real=True)
-D3 = sym.symbols('D3',positive=True,real=True)
-D4 = sym.symbols('D4',positive=True,real=True)
-D1n = sym.symbols('D1n',positive=True,real=True)
-D2n = sym.symbols('D2n',positive=True,real=True)
-D3n = sym.symbols('D3n',positive=True,real=True)
-D4n = sym.symbols('D4n',positive=True,real=True)
+Qi = sym.symbols('Qi')
+Qj = sym.symbols('Qj')
+Qk = sym.symbols('Qk')
+Ql = sym.symbols('Ql')
+D0 = sym.symbols('D0')
+D1 = sym.symbols('D1')
+D2 = sym.symbols('D2')
+D3 = sym.symbols('D3')
+D4 = sym.symbols('D4')
+D1n = sym.symbols('D1n')
+D2n = sym.symbols('D2n')
+D3n = sym.symbols('D3n')
+D4n = sym.symbols('D4n')
 
 class ListofPTterms:
     def __init__(self,diff,fc,expression):
@@ -52,9 +53,10 @@ class ListofPTterms:
                 self.explst_fm_filter[i] *= sym.Rational(1,math.factorial(3)**2)
                 self.explst_fm_filter[i] *= 8*sym.sqrt(self.freqlst[0]**self.fclst_filter[i][0]*self.freqlst[1]**self.fclst_filter[i][1]*self.freqlst[2]**self.fclst_filter[i][2]*self.freqlst[0]**self.fclst_filter[i][3]*self.freqlst[1]**self.fclst_filter[i][4]*self.freqlst[2]**self.fclst_filter[i][5])
                 self.explst_fm_filter[i] = sym.simplify(self.explst_fm_filter[i])
-            elif (len(self.fclst_filter[i] == 8)):
+            elif (len(self.fclst_filter[i]) == 8):
                 self.explst_fm_filter[i] *= sym.Rational(1,math.factorial(4)**2)
                 self.explst_fm_filter[i] *= 16*sym.sqrt(self.freqlst[0]**self.fclst_filter[i][0]*self.freqlst[1]**self.fclst_filter[i][1]*self.freqlst[2]**self.fclst_filter[i][2]**self.freqlst[3]**self.fclst_filter[i][3]*self.freqlst[0]**self.fclst_filter[i][4]*self.freqlst[1]**self.fclst_filter[i][5]*self.freqlst[2]**self.fclst_filter[i][6]*self.freqlst[3]**self.fclst_filter[i][7])
+                self.explst_fm_filter[i] = sym.simplify(self.explst_fm_filter[i])
 
             
 
@@ -91,6 +93,7 @@ class ListofPTterms:
                     self.explst_revers.append(self.explst_samediff[i]/self.diffexp(self.diff)+explst_sd[i]/self.diffexp(diff))
         else:
             sys.exit("second merge need two terms with reverse diff")
+
     #substitute Im with fm 
     def subsIm_fm(self,thermAverules):
         leng =len(self.explst_revers)
@@ -180,10 +183,12 @@ class ListofPTterms:
                 print("The revers expression is", self.explst_revers[i]) 
                 print("The subs expression is", self.explst_fm[i]) 
         if (whichstage == 3):
+            self.explst_latex = self.explst_fm_filter
             for i in range(len(self.fclst_filter)):
                 fcprintlst = self.fclst_Qform(self.fclst_filter[i])
                 print("The fc is", self.fclst_filter[i], " ",fcprintlst)
                 print("The final expression is", self.explst_fm_filter[i]) 
+                self.explst_latex[i] = sym.latex(self.explst_fm_filter[i])
                 #print("Latex is",sym.latex(self.explst_fm_filter[i]))
 
 

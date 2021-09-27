@@ -4,6 +4,7 @@ import sys
 import numpy as np
 sys.path.append(".")
 from listofPTterms import ListofPTterms
+import csv
 
 Ii = sym.symbols('Ii')
 Ij = sym.symbols('Ij')
@@ -17,26 +18,26 @@ fi = sym.symbols('fi')
 fj = sym.symbols('fj')
 fk = sym.symbols('fk')
 fl = sym.symbols('fl')
-Qi = sym.symbols('Qi',positive=True,real=True)
-Qj = sym.symbols('Qj',positive=True,real=True)
-Qk = sym.symbols('Qk',positive=True,real=True)
-Ql = sym.symbols('Ql',positive=True,real=True)
-D0 = sym.symbols('D0',positive=True,real=True)
-D1 = sym.symbols('D1',positive=True,real=True)
-D2 = sym.symbols('D2',positive=True,real=True)
-D3 = sym.symbols('D3',positive=True,real=True)
-D4 = sym.symbols('D4',positive=True,real=True)
-D1n = sym.symbols('D1n',positive=True,real=True)
-D2n = sym.symbols('D2n',positive=True,real=True)
-D3n = sym.symbols('D3n',positive=True,real=True)
-D4n = sym.symbols('D4n',positive=True,real=True)
+Qi = sym.symbols('Qi')
+Qj = sym.symbols('Qj')
+Qk = sym.symbols('Qk')
+Ql = sym.symbols('Ql')
+D0 = sym.symbols('D0')
+D1 = sym.symbols('D1')
+D2 = sym.symbols('D2')
+D3 = sym.symbols('D3')
+D4 = sym.symbols('D4')
+D1n = sym.symbols('D1n')
+D2n = sym.symbols('D2n')
+D3n = sym.symbols('D3n')
+D4n = sym.symbols('D4n')
 
 class ThermalAvg:
     def __init__(self):
         #operator combinations 
         self.fc3rd_origin,self.fc4th_origin = self.fcoperator()
         #difference combinations
-        self.diff3rd_origin,self.diff4th_orgin = self.diffgen()
+        self.diff3rd_origin,self.diff4th_origin = self.diffgen()
         #list of each symbols
         self.operatorlst = [Qi,Qj,Qk,Ql]
         self.freqlst = [wi,wj,wk,wl]
@@ -82,7 +83,21 @@ class ThermalAvg:
             if (self.diff3rd_origin[i][0]!=0 and self.diff3rd_origin[i][1]!=0 and self.diff3rd_origin[i][2]==0):
                 diff3rd2mode.append(self.diff3rd_origin[i])
         #generalized function for the step 2-8
-        self.step2_8(unnecesry,diff3rd2mode,fc3rd2mode)
+        lstofPTterms_3rd = self.step2_8(unnecesry,diff3rd2mode,fc3rd2mode)
+        #4th
+        unnecesry = [2,3]
+        fc4th2mode = []
+        diff4th2mode = []
+        #1, get the diff and fc list under each condition, do 4th 
+        for i in range(len(self.fc4th_origin)):
+            if (self.fc4th_origin[i][0] != 0 and self.fc4th_origin[i][1] !=0):
+                fc4th2mode.append(self.fc4th_origin[i])
+        for i in range(len(self.diff4th_origin)):
+            if (self.diff4th_origin[i][0]!=0 and self.diff4th_origin[i][1]!=0 and self.diff4th_origin[i][2]!=0 and self.diff4th_origin[i][3]==0):
+                diff4th2mode.append(self.diff4th_origin[i])
+        #generalized function for the step 2-8
+        lstofPTterms_4th = self.step2_8(unnecesry,diff4th2mode,fc4th2mode)
+        self.write_csv('twomode.csv',lstofPTterms_3rd,lstofPTterms_4th)
 
     def onemodewvfn(self):
         #the one mode exicted wave function thermal average means two things:
@@ -101,7 +116,21 @@ class ThermalAvg:
             if (self.diff3rd_origin[i][0]!=0 and self.diff3rd_origin[i][1]==0 and self.diff3rd_origin[i][2]==0):
                 diff3rd1mode.append(self.diff3rd_origin[i])
         #generalized function for the step 2-8
-        self.step2_8(unnecesry,diff3rd1mode,fc3rd1mode)
+        lstofPTterms_3rd = self.step2_8(unnecesry,diff3rd1mode,fc3rd1mode)
+        #4th order
+        unnecesry = [1,2,3]
+        fc4th1mode = []
+        diff4th1mode = []
+        for i in range(len(self.fc4th_origin)):
+            if (self.fc4th_origin[i][0] != 0):
+                fc4th1mode.append(self.fc4th_origin[i])
+        for i in range(len(self.diff4th_origin)):
+            if (self.diff4th_origin[i][0]!=0 and self.diff4th_origin[i][1]==0 and self.diff4th_origin[i][2]==0 and self.diff4th_origin[i][3]==0) :
+                diff4th1mode.append(self.diff4th_origin[i])
+        #generalized function for the step 2-8
+        lstofPTterms_4th = self.step2_8(unnecesry,diff4th1mode,fc4th1mode)
+        self.write_csv('onemode.csv',lstofPTterms_3rd,lstofPTterms_4th)
+
 
     def step2_8(self,unnecesry,diffiptlst,fciptlst):
         #2, evaluate each term by Born huang rules and do first merge for terms with same diff
@@ -118,10 +147,11 @@ class ThermalAvg:
         for i in range(len(lstofPTterms_revers)):
             lstofPTterms_revers[i].filteroutovrlap(unnecesry)
         #XXX 7, do pre-factor calculation(pairing scheme) calculation for each term in each classes.
-        #for i in range(len(lstofPTterms_revers)):
-        #    lstofPTterms_revers[i].prefactor()
+        for i in range(len(lstofPTterms_revers)):
+            lstofPTterms_revers[i].prefactor()
         for each in lstofPTterms_revers:
             each.printout(3)
+        return lstofPTterms_revers
 
         #8, output each term with same diff(same class) in the latex style.
 
@@ -234,6 +264,20 @@ class ThermalAvg:
             if (sum(list(iter4thtemp[i])) == 4):
                 iter4th.append(iter4thtemp[i])
         return iter3rd,iter4th
+
+    def write_csv(namefile,self,lstofPTterms_3rd,lstofPTterms_4th):
+        with open(namefile,'w') as csvfile:
+            wrtr = csv.writer(csvfile)
+            outputlist = []
+            for i in range(len(lstofPTterms_3rd)):
+                outputlist +=lstofPTterms_3rd[i].explst_latex
+            wrtr.writerow(outputlist)
+            outputlist = []
+            for i in range(len(lstofPTterms_4th)):
+                outputlist +=lstofPTterms_4th[i].explst_latex
+            wrtr.writerow(outputlist)
+
+
 
 
 
