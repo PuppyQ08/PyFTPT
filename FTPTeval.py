@@ -9,27 +9,27 @@ Ii = sym.symbols('Ii')
 Ij = sym.symbols('Ij')
 Ik = sym.symbols('Ik')
 Il = sym.symbols('Il')
-wi = sym.symbols('wi')
-wj = sym.symbols('wj')
-wk = sym.symbols('wk')
-wl = sym.symbols('wl')
+wi = sym.symbols('wi',positive=True,real=True)
+wj = sym.symbols('wj',positive=True,real=True)
+wk = sym.symbols('wk',positive=True,real=True)
+wl = sym.symbols('wl',positive=True,real=True)
 fi = sym.symbols('fi')
 fj = sym.symbols('fj')
 fk = sym.symbols('fk')
 fl = sym.symbols('fl')
-Qi = sym.symbols('Qi')
-Qj = sym.symbols('Qj')
-Qk = sym.symbols('Qk')
-Ql = sym.symbols('Ql')
-D0 = sym.symbols('D0')
-D1 = sym.symbols('D1')
-D2 = sym.symbols('D2')
-D3 = sym.symbols('D3')
-D4 = sym.symbols('D4')
-D1n = sym.symbols('D1n')
-D2n = sym.symbols('D2n')
-D3n = sym.symbols('D3n')
-D4n = sym.symbols('D4n')
+Qi = sym.symbols('Qi',positive=True,real=True)
+Qj = sym.symbols('Qj',positive=True,real=True)
+Qk = sym.symbols('Qk',positive=True,real=True)
+Ql = sym.symbols('Ql',positive=True,real=True)
+D0 = sym.symbols('D0',positive=True,real=True)
+D1 = sym.symbols('D1',positive=True,real=True)
+D2 = sym.symbols('D2',positive=True,real=True)
+D3 = sym.symbols('D3',positive=True,real=True)
+D4 = sym.symbols('D4',positive=True,real=True)
+D1n = sym.symbols('D1n',positive=True,real=True)
+D2n = sym.symbols('D2n',positive=True,real=True)
+D3n = sym.symbols('D3n',positive=True,real=True)
+D4n = sym.symbols('D4n',positive=True,real=True)
 
 class ThermalAvg:
     def __init__(self):
@@ -48,7 +48,7 @@ class ThermalAvg:
         self.thermAverules = self.thermAvgeval()#return a list of dict
         self.BornHuangrules = self.BHruleeval()#return a list of dict
         #start with one mode excited wave function
-        self.threemodewvfn()
+        self.onemodewvfn()
 
     def threemodewvfn(self):
         #the two mode exicted wave function :
@@ -117,9 +117,9 @@ class ThermalAvg:
         #6, for each class with same diff, we need to filter out those terms equivalent algebraicly,like Qijj Qijj and  Qikk Qikk, the rule to do that is switching the unnecessary index like for one mode wave fn, k and l is the unnecessary one.
         for i in range(len(lstofPTterms_revers)):
             lstofPTterms_revers[i].filteroutovrlap(unnecesry)
-        #XXX TBD 7, do pairing scheme calculation for each term in each classes.
+        #XXX 7, do pre-factor calculation(pairing scheme) calculation for each term in each classes.
         #for i in range(len(lstofPTterms_revers)):
-        #    lstofPTterms_revers[i].pair_scheme()
+        #    lstofPTterms_revers[i].prefactor()
         for each in lstofPTterms_revers:
             each.printout(3)
 
