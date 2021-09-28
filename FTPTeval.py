@@ -49,10 +49,10 @@ class ThermalAvg:
         self.thermAverules = self.thermAvgeval()#return a list of dict
         self.BornHuangrules = self.BHruleeval()#return a list of dict
         #start with one mode excited wave function
-        self.onemodewvfn()
+        self.threemodewvfn()
 
     def threemodewvfn(self):
-        #the two mode exicted wave function :
+        #the three mode exicted wave function :
         #one, the operator with non-zero 1st 2nd 3rd terms because it is orthogonal
         #two, the difference have non-zero 1st 2nd 3rd terms and zero rest
         unnecesry = []
@@ -66,7 +66,20 @@ class ThermalAvg:
             if (self.diff3rd_origin[i][0]!=0 and self.diff3rd_origin[i][1]!=0 and self.diff3rd_origin[i][2] !=0):
                 diff3rd3mode.append(self.diff3rd_origin[i])
         #generalized function for the step 2-8
-        self.step2_8(unnecesry,diff3rd3mode,fc3rd3mode)
+        lstofPTterms_3rd =self.step2_8(unnecesry,diff3rd3mode,fc3rd3mode)
+        unnecesry = [3]
+        fc4th3mode = []
+        diff4th3mode = []
+        #1, get the diff and fc list under each condition, do 4th
+        for i in range(len(self.fc4th_origin)):
+            if (self.fc4th_origin[i][0] != 0 and self.fc4th_origin[i][1] !=0 and self.fc4th_origin[i][2] !=0):
+                fc4th3mode.append(self.fc4th_origin[i])
+        for i in range(len(self.diff4th_origin)):
+            if (self.diff4th_origin[i][0]!=0 and self.diff4th_origin[i][1]!=0 and self.diff4th_origin[i][2] !=0):
+                diff4th3mode.append(self.diff4th_origin[i])
+        #generalized function for the step 2-8
+        lstofPTterms_4th =self.step2_8(unnecesry,diff4th3mode,fc4th3mode)
+        self.write_csv('threemode.csv',lstofPTterms_3rd,lstofPTterms_4th)
 
     def twomodewvfn(self):
         #the two mode exicted wave function :
@@ -265,7 +278,7 @@ class ThermalAvg:
                 iter4th.append(iter4thtemp[i])
         return iter3rd,iter4th
 
-    def write_csv(namefile,self,lstofPTterms_3rd,lstofPTterms_4th):
+    def write_csv(self,namefile,lstofPTterms_3rd,lstofPTterms_4th):
         with open(namefile,'w') as csvfile:
             wrtr = csv.writer(csvfile)
             outputlist = []

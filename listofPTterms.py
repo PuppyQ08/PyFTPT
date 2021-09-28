@@ -187,8 +187,8 @@ class ListofPTterms:
             for i in range(len(self.fclst_filter)):
                 fcprintlst = self.fclst_Qform(self.fclst_filter[i])
                 print("The fc is", self.fclst_filter[i], " ",fcprintlst)
-                print("The final expression is", self.explst_fm_filter[i]) 
-                self.explst_latex[i] = sym.latex(self.explst_fm_filter[i])
+                print("The final expression is", sym.together(self.explst_fm_filter[i]))
+                self.explst_latex[i] = sym.latex(sym.together(self.explst_fm_filter[i]))
                 #print("Latex is",sym.latex(self.explst_fm_filter[i]))
 
 
