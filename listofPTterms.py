@@ -3,6 +3,7 @@ import sympy as sym
 import sys
 import itertools
 import math
+import copy
 #Ii-Il can't be set to as positive True and real True because:
 #when substitue Im with fm, it will do like Im = sqrt(Im**2)replacement
 Ii = sym.symbols('Ii')
@@ -55,7 +56,7 @@ class ListofPTterms:
                 self.explst_fm_filter[i] = sym.simplify(self.explst_fm_filter[i])
             elif (len(self.fclst_filter[i]) == 8):
                 self.explst_fm_filter[i] *= sym.Rational(1,math.factorial(4)**2)
-                self.explst_fm_filter[i] *= 16*sym.sqrt(self.freqlst[0]**self.fclst_filter[i][0]*self.freqlst[1]**self.fclst_filter[i][1]*self.freqlst[2]**self.fclst_filter[i][2]**self.freqlst[3]**self.fclst_filter[i][3]*self.freqlst[0]**self.fclst_filter[i][4]*self.freqlst[1]**self.fclst_filter[i][5]*self.freqlst[2]**self.fclst_filter[i][6]*self.freqlst[3]**self.fclst_filter[i][7])
+                self.explst_fm_filter[i] *= 16*sym.sqrt(self.freqlst[0]**self.fclst_filter[i][0]*self.freqlst[1]**self.fclst_filter[i][1]*self.freqlst[2]**self.fclst_filter[i][2]*self.freqlst[3]**self.fclst_filter[i][3]*self.freqlst[0]**self.fclst_filter[i][4]*self.freqlst[1]**self.fclst_filter[i][5]*self.freqlst[2]**self.fclst_filter[i][6]*self.freqlst[3]**self.fclst_filter[i][7])
                 self.explst_fm_filter[i] = sym.simplify(self.explst_fm_filter[i])
 
             
@@ -155,8 +156,8 @@ class ListofPTterms:
                         self.explst_fm_filter.append(self.explst_fm[i])
                         self.fclst_filter.append(self.fclst_samediff[i])
         else:
-            self.fclst_filter =self.fclst_samediff 
-            self.explst_fm_filter =self.explst_fm
+            self.fclst_filter = copy.deepcopy(self.fclst_samediff) 
+            self.explst_fm_filter =copy.deepcopy(self.explst_fm)
 
 
     def printout(self,whichstage):

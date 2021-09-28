@@ -49,7 +49,28 @@ class ThermalAvg:
         self.thermAverules = self.thermAvgeval()#return a list of dict
         self.BornHuangrules = self.BHruleeval()#return a list of dict
         #start with one mode excited wave function
-        self.threemodewvfn()
+        self.onemodewvfn()
+        #self.twomodewvfn()
+        #self.threemodewvfn()
+        #self.fourmodewvfn()
+
+    def fourmodewvfn(self):
+        #the four mode exicted wave function :
+        #one, the operator with non-zero 1st 2nd 3rd 4th terms because it is orthogonal
+        #two, the difference have non-zero 1st 2nd 3rd 4th terms and zero rest
+        unnecesry = []
+        fc4th4mode = []
+        diff4th4mode = []
+        #1, get the diff and fc list under each condition, do 4th
+        for i in range(len(self.fc4th_origin)):
+            if (self.fc4th_origin[i][0] != 0 and self.fc4th_origin[i][1] !=0 and self.fc4th_origin[i][2] !=0 and self.fc4th_origin[i][3] !=0):
+                fc4th4mode.append(self.fc4th_origin[i])
+        for i in range(len(self.diff4th_origin)):
+            if (self.diff4th_origin[i][0]!=0 and self.diff4th_origin[i][1]!=0 and self.diff4th_origin[i][2] !=0 and self.diff4th_origin[i][3]!=0):
+                diff4th4mode.append(self.diff4th_origin[i])
+        #generalized function for the step 2-8
+        lstofPTterms_4th =self.step2_8(unnecesry,diff4th4mode,fc4th4mode)
+        #self.write_csv('fourmode.csv',lstofPTterms_4th,lstofPTterms_4th)
 
     def threemodewvfn(self):
         #the three mode exicted wave function :
@@ -162,6 +183,7 @@ class ThermalAvg:
         #XXX 7, do pre-factor calculation(pairing scheme) calculation for each term in each classes.
         for i in range(len(lstofPTterms_revers)):
             lstofPTterms_revers[i].prefactor()
+        #XXX we write the latex form in this printout at "3"
         for each in lstofPTterms_revers:
             each.printout(3)
         return lstofPTterms_revers
