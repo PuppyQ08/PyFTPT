@@ -50,9 +50,9 @@ class ThermalAvg:
         self.BornHuangrules = self.BHruleeval()#return a list of dict
         #start with one mode excited wave function
         self.onemodewvfn()
-        #self.twomodewvfn()
-        #self.threemodewvfn()
-        #self.fourmodewvfn()
+        self.twomodewvfn()
+        self.threemodewvfn()
+        self.fourmodewvfn()
 
     def fourmodewvfn(self):
         #the four mode exicted wave function :
@@ -70,7 +70,7 @@ class ThermalAvg:
                 diff4th4mode.append(self.diff4th_origin[i])
         #generalized function for the step 2-8
         lstofPTterms_4th =self.step2_8(unnecesry,diff4th4mode,fc4th4mode)
-        #self.write_csv('fourmode.csv',lstofPTterms_4th,lstofPTterms_4th)
+        self.write_csv('fourmode.csv',lstofPTterms_4th,lstofPTterms_4th)
 
     def threemodewvfn(self):
         #the three mode exicted wave function :
@@ -96,7 +96,7 @@ class ThermalAvg:
             if (self.fc4th_origin[i][0] != 0 and self.fc4th_origin[i][1] !=0 and self.fc4th_origin[i][2] !=0):
                 fc4th3mode.append(self.fc4th_origin[i])
         for i in range(len(self.diff4th_origin)):
-            if (self.diff4th_origin[i][0]!=0 and self.diff4th_origin[i][1]!=0 and self.diff4th_origin[i][2] !=0):
+            if (self.diff4th_origin[i][0]!=0 and self.diff4th_origin[i][1]!=0 and self.diff4th_origin[i][2] !=0 and self.diff4th_origin[i][3] == 0):
                 diff4th3mode.append(self.diff4th_origin[i])
         #generalized function for the step 2-8
         lstofPTterms_4th =self.step2_8(unnecesry,diff4th3mode,fc4th3mode)
@@ -127,7 +127,7 @@ class ThermalAvg:
             if (self.fc4th_origin[i][0] != 0 and self.fc4th_origin[i][1] !=0):
                 fc4th2mode.append(self.fc4th_origin[i])
         for i in range(len(self.diff4th_origin)):
-            if (self.diff4th_origin[i][0]!=0 and self.diff4th_origin[i][1]!=0 and self.diff4th_origin[i][2]!=0 and self.diff4th_origin[i][3]==0):
+            if (self.diff4th_origin[i][0]!=0 and self.diff4th_origin[i][1]!=0 and self.diff4th_origin[i][2]==0 and self.diff4th_origin[i][3]==0):
                 diff4th2mode.append(self.diff4th_origin[i])
         #generalized function for the step 2-8
         lstofPTterms_4th = self.step2_8(unnecesry,diff4th2mode,fc4th2mode)
