@@ -49,9 +49,9 @@ class ThermalAvg:
         self.thermAverules = self.thermAvgeval()#return a list of dict
         self.BornHuangrules = self.BHruleeval()#return a list of dict
         #start with one mode excited wave function
-        #self.onemodewvfn()
-        #self.twomodewvfn()
-        #self.threemodewvfn()
+        self.onemodewvfn()
+        self.twomodewvfn()
+        self.threemodewvfn()
         self.fourmodewvfn()
 
     def fourmodewvfn(self):
@@ -243,7 +243,7 @@ class ThermalAvg:
 
     #rules for substituting Im with fm
     def thermAvghelper(self,Qm,Im,fm):
-        tempdict = {Im**4:24*fm**4+36*fm**3+14*fm**2+fm,Im**3:fm*(6*fm**2+6*fm+1),Im**2:fm*(fm+2),Im:fm}
+        tempdict = {Im**4:24*fm**4+36*fm**3+14*fm**2+fm,Im**3:fm*(6*fm**2+6*fm+1),Im**2:fm*(2*fm+1),Im:fm}
         return tempdict
     
     def thermAvgeval(self):
@@ -302,14 +302,62 @@ class ThermalAvg:
 
     def write_csv(self,namefile,lstofPTterms_3rd,lstofPTterms_4th):
         with open(namefile,'w') as csvfile:
-            wrtr = csv.writer(csvfile)
+            wrtr = csv.writer(csvfile,delimiter=' ')
             outputlist = []
+            judge = 0
+            indx = ['i','j','k','l']
             for i in range(len(lstofPTterms_3rd)):
-                outputlist +=lstofPTterms_3rd[i].explst_latex
+                #deal with the latex form and add extra symbol for table
+                eachPT = lstofPTterms_3rd[i]
+                for j in range(len(eachPT.explst_fm_filter)):
+                    temp = sym.latex(sym.together(eachPT.explst_fm_filter[j]))
+                    fctemp = eachPT.fclst_filter[j]
+                    firstpart = r'\tilde{F}_{'+indx[0]*fctemp[0]+indx[1]*fctemp[1]+indx[2]*fctemp[2]+r'}'
+                    secondpart =r'\tilde{F}_{'+indx[0]*fctemp[3]+indx[1]*fctemp[4]+indx[2]*fctemp[5]+r'}'
+                    if (firstpart == secondpart):
+                        temp = firstpart+r'^2'+temp
+                    else:
+                        temp = firstpart+secondpart+temp
+                    if (judge == 0):
+                        temp = '$'+temp+r'$ &Eq&' 
+                    elif (judge == 1):
+                        temp = '$'+temp+r'$ &Eq \\' 
+                    temp = temp.replace('fi','f_i')
+                    temp = temp.replace('fj','f_j')
+                    temp = temp.replace('fk','f_k')
+                    temp = temp.replace('fl','f_l')
+                    temp = temp.replace('w','\omega_')
+                    judge +=1
+                    judge = judge%2
+                    outputlist.append(temp)
             wrtr.writerow(outputlist)
             outputlist = []
+            judge = 0
+            indx = ['i','j','k','l']
             for i in range(len(lstofPTterms_4th)):
-                outputlist +=lstofPTterms_4th[i].explst_latex
+                #deal with the latex form and add extra symbol for table
+                eachPT = lstofPTterms_4th[i]
+                for j in range(len(eachPT.explst_fm_filter)):
+                    temp = sym.latex(sym.together(eachPT.explst_fm_filter[j]))
+                    fctemp = eachPT.fclst_filter[j]
+                    firstpart =r'\tilde{F}_{'+indx[0]*fctemp[0]+indx[1]*fctemp[1]+indx[2]*fctemp[2]+indx[3]*fctemp[3] +r'}'
+                    secondpart =r'\tilde{F}_{'+ indx[0]*fctemp[4]+indx[1]*fctemp[5]+indx[2]*fctemp[6]+indx[3]*fctemp[7]+r'}'
+                    if (firstpart == secondpart):
+                        temp = firstpart+r'^2'+temp
+                    else:
+                        temp = firstpart+secondpart+temp
+                    if (judge == 0):
+                        temp = '$'+temp+r'$ &Eq&' 
+                    elif (judge == 1):
+                        temp = '$'+temp+r'$ &Eq \\' 
+                    temp = temp.replace('fi','f_i')
+                    temp = temp.replace('fj','f_j')
+                    temp = temp.replace('fk','f_k')
+                    temp = temp.replace('fl','f_l')
+                    temp = temp.replace('w','\omega_')
+                    judge +=1
+                    judge = judge%2
+                    outputlist.append(temp)
             wrtr.writerow(outputlist)
 
 

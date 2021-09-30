@@ -184,12 +184,10 @@ class ListofPTterms:
                 print("The revers expression is", self.explst_revers[i]) 
                 print("The subs expression is", self.explst_fm[i]) 
         if (whichstage == 3):
-            self.explst_latex = self.explst_fm_filter
             for i in range(len(self.fclst_filter)):
                 fcprintlst = self.fclst_Qform(self.fclst_filter[i])
                 print("The fc is", self.fclst_filter[i], " ",fcprintlst)
                 print("The final expression is", sym.together(self.explst_fm_filter[i]))
-                self.explst_latex[i] = sym.latex(sym.together(self.explst_fm_filter[i]))
                 #print("Latex is",sym.latex(self.explst_fm_filter[i]))
 
 
