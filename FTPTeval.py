@@ -49,9 +49,9 @@ class ThermalAvg:
         self.thermAverules = self.thermAvgeval()#return a list of dict
         self.BornHuangrules = self.BHruleeval()#return a list of dict
         #start with one mode excited wave function
-        self.onemodewvfn()
-        self.twomodewvfn()
-        self.threemodewvfn()
+        #self.onemodewvfn()
+        #self.twomodewvfn()
+        #self.threemodewvfn()
         self.fourmodewvfn()
 
     def fourmodewvfn(self):
