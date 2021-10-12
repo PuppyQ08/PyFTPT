@@ -8,14 +8,15 @@ fj = sym.symbols('fj')
 fk = sym.symbols('fk')
 fl = sym.symbols('fl')
 def pp(ipt):
-    print(sym.expand(sym.simplify(ipt)))
+    print(sym.expand(sym.simplify(ipt),numer =True))
+    #print(sym.expand(ipt))
     #print(ipt)
 
 diagram2C = (fi*fj+fj*fk+fi*fk+fi+fj+fk+1)/(wi+wj+wk)-(fi*fj+fj*fk-fi*fk+fj)/(wj-wi-wk)-(fi*fj-fk*fj-fi*fk-fk)/(wj+wi-wk)-(fk*fj-fi*fj-fi*fk-fi)/(wj-wi+wk)
 sub1 = diagram2C.subs({fk:fj,wk:wj})
 #sub1 = diagram2C.subs({fk:fj,wk:wj})
 #sub1 = diagram2C.subs({fk:fi,wk:wi,fj:fi,wj:wi})
-D1 = (fj*fk*(fj+fl+1)+fi*(fl+1)*(fj+1)-fk*fj*fl)/(-wi+wj+wk+wl)
+D1 = (fi*fk*(fj+fl+1)+fi*(fl+1)*(fj+1)-fk*fj*fl)/(-wi+wj+wk+wl)
 D2 = (fi*fl*(fk+fj+1)-fj*fk*(fi+fl+1))/(-wi+wj+wk-wl)
 D3 = (fl*fk*(fj+fi+1)+fl*(fi+1)*(fj+1)-fi*fj*fk)/(wi+wj+wk-wl)
 D4 = ((fk+1)*(fi+1)*(fl+1)*(fj+1)-fi*fj*fk*fl)/(wi+wj+wk+wl)
@@ -27,10 +28,10 @@ diagram2D = -sym.Rational(1,24)*(D1+D2+D3+D4+D5+D6+D7+D8)
 diagram2B_1 = -sym.Rational(1,8)*(2*fk+1)*(2*fl+1)*(fi+1/2)/wi
 #________________degenerate______2B
 diag2B_dg = sym.Rational(1,8)*(2*fk+1)*(2*fl+1)*fi*(fi+1)
-pp(diag2B_dg)
+#pp(diag2B_dg)
 PT1 = (2*fi*fk+2*fi*fl+fi-2*fj*fk+2*fj*fl-fj+4*fk*fl*(fi-fj))/8
 PT1 = PT1.subs({fj:fi})
-pp(PT1)
+#pp(PT1)
  
 #______________1.01 _1.06
 #sub1 = diagram2D.subs({fk:fi,wk:wi,fj:fi,wj:wi,fl:fi,wl:wi})
@@ -48,11 +49,11 @@ pp(PT1)
 #pp(PT1+PT2+PT3)
 #pp(sub1+sub2)
 #________________________2.07 2.08
-#PT1 = (2*fi*fk+2*fi*fl+fi-2*fj*fk+2*fj*fl-fj+4*fk*fl*(fi-fj))/8/(wi-wj)
-#PT2 = (2*fi*fk+2*fi*fl+fi+2*fj*fk+2*fj*fl+fj+4*fk*fl*(fi+fj+1)+2*fk+2*fl+1)/8/(wi+wj)
-#pp(sym.expand(sym.simplify(PT1+PT2),numer =True))
-#test = (2*fk+1)*(2*fl+1)*(wi*(2*fj+1)-wj*(2*fi+1))
-#pp(sym.expand(test))
+PT1 = (2*fi*fk+2*fi*fl+fi-2*fj*fk-2*fj*fl-fj+4*fk*fl*(fi-fj))/8/(wi-wj)
+PT2 = (2*fi*fk+2*fi*fl+fi+2*fj*fk+2*fj*fl+fj+4*fk*fl*(fi+fj+1)+2*fk+2*fl+1)/8/(wi+wj)
+pp(sym.expand(sym.simplify(PT1+PT2),numer =True))
+test = -(2*fk+1)*(2*fl+1)*(wi*(2*fj+1)-wj*(2*fi+1))/8
+pp(sym.expand(test))
 #_______________________2.03 2.04
 #PT1 = -(2*fi*fj+2*fi*fl+fi+2*fj**2+4*fj*fl*(fi+fj)+6*fj*fl+3*fj+2*fl+1)/8/(wi+wj)
 #PT2 = (2*fi*fj+2*fi*fl+fi-2*fj**2+4*fj*fl*(fi-fj)-2*fj*fl-fj)/8/(wi-wj)
@@ -71,6 +72,37 @@ diag2B = -(2*fk+1)*(2*fl+1)*(wi*(2*fj+1)-wj*(2*fi+1))
 #PT = - (8*fi*fk*fl+4*fi*fk+4*fi*fl+2*fi+4*fk*fl+2*fk+2*fl+1)/wi/16
 #pp(sym.expand(diag2B))
 #pp(sym.expand(PT))
-#______________________1.04 2.13 2.14 iijj
-
+#______________________1.04 iijj XXX wtf
+#diag2B= - sym.Rational(1,8)*(2*fj+1)**2*(fi+sym.Rational(1,2))/wi
+#diag2D_2 = - sym.Rational(1,24)*(D3+D6)
+#diag2D_2 = diag2D_2.subs({fk:fi,fl:fj,wk:wi,wl:wj})
+#diag2D = - sym.Rational(1,48)*(2*fj**2+2*fj)*(2*fi+1)/wi
+#diag = diag2B+diag2D
+#pp(diag2B)
+#pp(diag2D)
+#pp(diag2D_2)
+#pp(diag)
+#________________________2.13 2.14 iijj Bingo
+#diag2D_2 = - sym.Rational(1,24)*(D7)
+#diag2D_2 = diag2D_2.subs({fk:fi,fl:fj,wk:wi,wl:wj})
+#pp(diag2D_2)
+#______________________2.15 2.16 wtf ijjj
+#diag2D_2 = - sym.Rational(1,24)*(D3+D6+D8)
+#diag2D_2 = - sym.Rational(1,24)*(D2+D5+D7)
+#diag2D_3 = - sym.Rational(1,24)*(D2)
+##diag2B_2 = (2*fi*fk+2*fi*fl+fi+2*fj*fk+2*fj*fl+fj+4*fk*fl*(fi+fj+1)+2*fk+2*fl+1)/8/(wi+wj)
+#diag2B_2 = (2*fi*fk+2*fi*fl+fi-2*fj*fk-2*fj*fl-fj+4*fk*fl*(fi-fj))/8/(wi-wj)
+#diag2B_2 = (diag2B_2).subs({fk:fj,fl:fj,wk:wj,wl:wj})
+##diag2D_2 = (diag2D_2+diag2B_2).subs({fk:fj,fl:fj,wk:wj,wl:wj})
+#diag2D_2 = (diag2D_2).subs({fk:fj,fl:fj,wk:wj,wl:wj})
+#diag2D_3 = (diag2D_3).subs({fk:fj,fl:fj,wk:wj,wl:wj})
+#pp(diag2B_2)
+#pp(diag2D_2)
+#pp(diag2D_3)
+#_____________________2.11 Bingo ijjj
+#diag2D_2 = - sym.Rational(1,24)*(D4)
+#diag2D_2 = - sym.Rational(1,24)*(D1)
+#diag2D_2 = (diag2D_2).subs({fk:fj,fl:fj,wk:wj,wl:wj})
+#pp(diag2D_2)
+#_____________________
 
