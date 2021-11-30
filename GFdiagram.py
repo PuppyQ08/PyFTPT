@@ -14,10 +14,32 @@ def pp(ipt):
     #print(sym.nsimplify(ipt))
     #print(ipt)
 
-diagram2C = (fi*fj+fj*fk+fi*fk+fi+fj+fk+1)/(wi+wj+wk)-(fi*fj+fj*fk-fi*fk+fj)/(wj-wi-wk)-(fi*fj-fk*fj-fi*fk-fk)/(wj+wi-wk)-(fk*fj-fi*fj-fi*fk-fi)/(wj-wi+wk)
-sub1 = diagram2C.subs({fk:fj,wk:wj})
-#sub1 = diagram2C.subs({fk:fj,wk:wj})
+#__________________1.01 2.01 2.09
+C1 =  - sym.Rational(1,6)*(fi*fj+fj*fk+fi*fk+fi+fj+fk+1)/(wi+wj+wk)
+C2 =  sym.Rational(1,6)*(fi*fj+fj*fk-fi*fk+fj)/(wj-wi-wk)
+C3 =  sym.Rational(1,6)*(fi*fj-fk*fj-fi*fk-fk)/(wj+wi-wk)
+C4 =  sym.Rational(1,6)*(fk*fj-fi*fj-fi*fk-fi)/(wj-wi+wk)
+diagram2C = C1+C2+C3+C4
+Dia2A = -sym.Rational(1,4)*(2*fj+1)*(2*fk+1)/wi
+subC1 = C1.subs({fk:fj,wk:wj})
+subC2 = C2.subs({fk:fj,wk:wj})
+subC3 = C3.subs({fk:fj,wk:wj})
+subC4 = C4.subs({fk:fj,wk:wj})
+sub2 = Dia2A.subs({fk:fj,wk:wj})
+#pp(subC1)
+#pp(subC4)
+#pp(sub2+3*subC2+3*subC3)
+#_______________1.03 1.08
+subC = C1.subs({fk:fi,wk:wi,fj:fi,wj:wi})
+sub2A = (Dia2A+C2+C3+C4).subs({fk:fi,wk:wi,fj:fi,wj:wi})
+pp(subC)
+pp(sub2A)
+
+
 #sub1 = diagram2C.subs({fk:fi,wk:wi,fj:fi,wj:wi})
+
+
+
 D1 = (fi*fk*(fj+fl+1)+fi*(fl+1)*(fj+1)-fk*fj*fl)/(-wi+wj+wk+wl)
 D2 = (fi*fl*(fk+fj+1)-fj*fk*(fi+fl+1))/(-wi+wj+wk-wl)
 D3 = (fl*fk*(fj+fi+1)+fl*(fi+1)*(fj+1)-fi*fj*fk)/(wi+wj+wk-wl)
@@ -40,9 +62,9 @@ PT216 = (fi+6*fj*(fi*fj+fi-fj**2-fj)-fj)/16
 #PT1 = PT208+PT204+PT206+PT210+PT214+PT216
 #PT1 = PT1.subs({fj:fi})
 PT208 = PT208.subs({fj:fi})
-pp(PT208)
+#pp(PT208)
  
-#______________1.01 _1.06
+#_______________1.06
 #sub1 = diagram2D.subs({fk:fi,wk:wi,fj:fi,wj:wi,fl:fi,wl:wi})
 #sub2 = sym.simplify(sub1)
 #sub3 = sub2 + sym.Rational(1,16)*(2*fi+1)**3/wi
