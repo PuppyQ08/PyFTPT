@@ -111,6 +111,8 @@ class Numerical:
                         D04 +=  FCQ4[i,j,k,k]*FCQ4[i,j,j,j]*(2*f[i]*f[j] + 2*f[i]*f[k] + f[i] - 2*f[j]**2 + 4*f[j]*f[k]*(f[i] - f[j]) - 2*f[j]*f[k] - f[j])/(8*(w[i] - w[j]))
                         D02 += -FCQ4[i,j,k,k]**2*(f[i] + f[j] + 8*f[k]*(f[i]*f[k] + f[i] + f[j]*f[k] + f[j] + f[k] + 1) + 1)/(48*(w[i] + w[j]))
                         D03 += -FCQ4[i,j,k,k]*FCQ4[i,j,j,j]*(2*f[i]*f[j] + 2*f[i]*f[k] + f[i] + 2*f[j]**2 + 4*f[j]*f[k]*(f[i] + f[j]) + 6*f[j]*f[k] + 3*f[j] + 2*f[k] + 1)/(8*(w[i] + w[j]))
+                        print("S09",i,j,k,-FCQ4[i,i,j,j]*FCQ4[i,i,k,k]*(8*f[i]*f[k]*f[j] + 4*f[i]*f[k] + 4*f[i]*f[j] + 2*f[i] + 4*f[k]*f[j] + 2*f[k] + 2*f[j] + 1)/(16*w[i]))
+
                         S09 += -FCQ4[i,i,j,j]*FCQ4[i,i,k,k]*(8*f[i]*f[k]*f[j] + 4*f[i]*f[k] + 4*f[i]*f[j] + 2*f[i] + 4*f[k]*f[j] + 2*f[k] + 2*f[j] + 1)/(16*w[i])
                         T03 += -FCQ4[i,j,k,k]**2*(f[i]*f[j] + f[i]*f[k]**2 + f[i] + f[j]*f[k]**2 + f[j] + f[k]**2 + 2*f[k]*(f[i]*f[j] + f[i] + f[j] + 1) + 1)/(24*(w[i] + w[j] + 2*w[k]))
                         T07 +=  FCQ4[i,j,k,k]**2*(2*f[i]*f[j]*f[k] + f[i]*f[j] - f[i]*f[k]**2 - f[j]*f[k]**2 - f[k]**2)/(24*(w[i] + w[j] - 2*w[k]))
@@ -131,15 +133,14 @@ class Numerical:
                             if (w[i] - w[j] - w[k] + w[l]!= 0 ):
                                 Q07 += FCQ4[i,j,k,l]**2*(-f[i]*f[j]*f[k] + f[i]*f[j]*f[l] + f[i]*f[k]*f[l] + f[i]*f[l] - f[j]*f[k]*f[l] - f[j]*f[k])/(24*(w[i] - w[j] - w[k] + w[l]))
                             Q08 += FCQ4[i,j,k,l]**2*(f[i]*f[j]*f[k] + f[i]*f[j]*f[l] + f[i]*f[j] + f[i]*f[k]*f[l] + f[i]*f[k] + f[i]*f[l] + f[i] - f[j]*f[k]*f[l])/(24*(w[i] - w[j] - w[k] - w[l]))
-        print(T01)
         result3rd = S01 +S07 +S02 +S08 +S03 +D01 +D09 +T01 +T05 +T02 +T06 
         result4th = S04 +S09 +S05 +S10 +S06 +D02 +D07 +D03 +D15 +D05 +D11 +D12 +D10 +D08 +D04 +D16 +D13 +D14 +D06 +T03 +T07 +T04 +T08 +Q01 +Q02 +Q03 +Q04 +Q05 +Q06 +Q07 +Q08
         print("FTPT")
-        print(A01+A02)
-        print("3rd....")
-        print(result3rd)
+        #print("3rd....")
+        #print(result3rd)
         print("4th....")
-        print(result4th)
+        #print(result4th)
+        print(S09)
 
         #print(result)
 
@@ -158,18 +159,20 @@ class Numerical:
         D6  = 0
         D7  = 0
         D8  = 0
+        test4th1 = 0
+        test4th2 = 0
         for i in range(nmode):
             for j in range(nmode):
                 A1 += FCQ4[i,i,j,j]*(2*f[i]+1)*(2*f[j]+1)/8
                 for k in range(nmode):
+                    #if (j!=k and j!=i and k!=i):
+                    #    B2D+= -FCQ4[i,i,j,j]*FCQ4[i,i,k,k]*(2*f[j]+1)*(2*f[k]+1)*(f[i]+1/2)/w[i]/8
+                    B2D+= -FCQ4[i,i,j,j]*FCQ4[i,i,k,k]*(2*f[j]+1)*(2*f[k]+1)*(f[i]+1/2)/w[i]/8
                     A2 += -FCQ3[i,j,j]*FCQ3[i,k,k]*(2*f[j]+1)*(2*f[k]+1)/w[i]/4     
+                    C2 += -FCQ3[i,j,k]**2*((f[i]*f[j]+f[j]*f[k]+f[i]*f[k]+f[i]+f[j]+f[k]+1)/(w[i]+w[j]+w[k])-(f[i]*f[j]+f[j]*f[k]-f[i]*f[k]+f[j])/(w[j]-w[i]-w[k])-(f[i]*f[j]-f[k]*f[j]-f[i]*f[k]-f[k])/(w[j]+w[i]-w[k])-(f[k]*f[j]-f[i]*f[j]-f[i]*f[k]-f[i])/(w[j]-w[i]+w[k]))/6
                     for l in range(nmode):
                         if(i!=j):
                             B2N+= -FCQ4[i,j,k,k]*FCQ4[i,j,l,l]*(2*f[k]+1)*(2*f[l]+1)*(w[i]*(2*f[j]+1) - w[j]*(2*f[i]+1))/(w[i]**2-w[j]**2)/8
-                        else:
-                            B2D+= -FCQ4[i,i,k,k]*FCQ4[i,i,l,l]*(2*f[k]+1)*(2*f[l]+1)*(f[i]+1/2)/w[i]
-
-                        C2 += -FCQ3[i,j,k]**2*((f[i]*f[j]+f[j]*f[k]+f[i]*f[k]+f[i]+f[j]+f[k]+1)/(w[i]+w[j]+w[k])-(f[i]*f[j]+f[j]*f[k]-f[i]*f[k]+f[j])/(w[j]-w[i]-w[k])-(f[i]*f[j]-f[k]*f[j]-f[i]*f[k]-f[k])/(w[j]+w[i]-w[k])-(f[k]*f[j]-f[i]*f[j]-f[i]*f[k]-f[i])/(w[j]-w[i]+w[k]))/6
                         D1 += -FCQ4[i,j,k,l]**2*(f[i]*f[k]*(f[j]+f[l]+1)+f[i]*(f[l]+1)*(f[j]+1)-f[k]*f[j]*f[l])/(-w[i]+w[j]+w[k]+w[l])/24
                         if (-w[i] + w[j] + w[k] - w[l]!= 0 ):
                             D2 += -FCQ4[i,j,k,l]**2*(f[i]*f[l]*(f[k]+f[j]+1)-f[j]*f[k]*(f[i]+f[l]+1))/(-w[i]+w[j]+w[k]-w[l])/24
@@ -184,11 +187,12 @@ class Numerical:
         GFresult3rd = A2 + C2 
         GFresult4th = B2N +B2D +D1 +D2 +D3 +D4 +D5 +D6 +D7 +D8 
         print("GF")
-        print(A1)
-        print("3rd....")
-        print(GFresult3rd)
+        #print("3rd....")
+        #print(GFresult3rd)
         print("4th....")
-        print(GFresult4th)
+        #print(GFresult4th)
+        print(B2D)
+
 
     def readSindoPES(self,filepath,nmode):
         w_omega = np.zeros(nmode)

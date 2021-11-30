@@ -30,10 +30,10 @@ sub2 = Dia2A.subs({fk:fj,wk:wj})
 #pp(subC4)
 #pp(sub2+3*subC2+3*subC3)
 #_______________1.03 1.08
-subC = C1.subs({fk:fi,wk:wi,fj:fi,wj:wi})
-sub2A = (Dia2A+C2+C3+C4).subs({fk:fi,wk:wi,fj:fi,wj:wi})
-pp(subC)
-pp(sub2A)
+#subC = C1.subs({fk:fi,wk:wi,fj:fi,wj:wi})
+#sub2A = (Dia2A+C2+C3+C4).subs({fk:fi,wk:wi,fj:fi,wj:wi})
+#pp(subC)
+#pp(sub2A)
 
 
 #sub1 = diagram2C.subs({fk:fi,wk:wi,fj:fi,wj:wi})
