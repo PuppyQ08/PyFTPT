@@ -14,10 +14,12 @@ wi = sym.symbols('wi',positive=True,real=True)
 wj = sym.symbols('wj',positive=True,real=True)
 wk = sym.symbols('wk',positive=True,real=True)
 wl = sym.symbols('wl',positive=True,real=True)
+wp = sym.symbols('wp',positive=True,real=True)
 fi = sym.symbols('fi')
 fj = sym.symbols('fj')
 fk = sym.symbols('fk')
 fl = sym.symbols('fl')
+fp = sym.symbols('fp')
 Qi = sym.symbols('Qi')
 Qj = sym.symbols('Qj')
 Qk = sym.symbols('Qk')
@@ -31,7 +33,7 @@ D1n = sym.symbols('D1n')
 D2n = sym.symbols('D2n')
 D3n = sym.symbols('D3n')
 D4n = sym.symbols('D4n')
-
+#data structure class of the algebraic expressions.
 class ListofPTterms:
     def __init__(self,diff,fc,expression):
         self.operatorlst = [Qi,Qj,Qk,Ql]
@@ -58,9 +60,6 @@ class ListofPTterms:
                 self.explst_fm_filter[i] *= sym.Rational(1,math.factorial(4)**2)
                 self.explst_fm_filter[i] *= 16*sym.sqrt(self.freqlst[0]**self.fclst_filter[i][0]*self.freqlst[1]**self.fclst_filter[i][1]*self.freqlst[2]**self.fclst_filter[i][2]*self.freqlst[3]**self.fclst_filter[i][3]*self.freqlst[0]**self.fclst_filter[i][4]*self.freqlst[1]**self.fclst_filter[i][5]*self.freqlst[2]**self.fclst_filter[i][6]*self.freqlst[3]**self.fclst_filter[i][7])
                 self.explst_fm_filter[i] = sym.simplify(self.explst_fm_filter[i])
-
-            
-
 
     def mergesamediff(self,PTterms):
         fclst = PTterms.fclst
@@ -143,15 +142,19 @@ class ListofPTterms:
                     judge = 0
                     for j in range(len(self.explst_fm_filter)):
                         #play switching
-                        tempexp1 = self.explst_fm_filter[j]
-                        tempexp2 = self.explst_fm[i]
+                        tempexp1 = self.explst_fm_filter[j]#the one already appended
+                        tempexp2 = self.explst_fm[i]#the one want to be appended
                         for eachgp in allswitch:
                             #switch each group of indexes.
-                            #both terms subs from eachgp[0] to eachgp[1],only take care of fm and wm
-                            tempexp1_sub = tempexp1.subs({self.BEfactorlst[eachgp[0]]:self.BEfactorlst[eachgp[1]],self.freqlst[eachgp[0]]:self.freqlst[eachgp[1]]})
-                            tempexp2_sub = tempexp2.subs({self.BEfactorlst[eachgp[0]]:self.BEfactorlst[eachgp[1]],self.freqlst[eachgp[0]]:self.freqlst[eachgp[1]]})
-                            if(tempexp1_sub.equals(tempexp2_sub)):
-                                judge +=1
+                            #one term switch eachgp[0] and eachgp[1],only take care of fm and wm
+                            temp1 = tempexp1.subs({self.BEfactorlst[eachgp[0]]:fp,self.freqlst[eachgp[0]]:wp})
+                            temp2 = temp1.subs({self.BEfactorlst[eachgp[1]]:self.BEfactorlst[eachgp[0]],self.freqlst[eachgp[1]]:self.freqlst[eachgp[0]]})
+                            temp3 = temp2.subs({fp:self.BEfactorlst[eachgp[1]],wp:self.freqlst[eachgp[1]]})
+                            if(temp3.equals(tempexp2)):
+                                break
+                                judge = 1
+                        if(judge != 0):
+                            break
                     if (judge == 0):
                         self.explst_fm_filter.append(self.explst_fm[i])
                         self.fclst_filter.append(self.fclst_samediff[i])

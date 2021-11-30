@@ -70,7 +70,8 @@ class ThermalAvg:
                 diff4th4mode.append(self.diff4th_origin[i])
         #generalized function for the step 2-8
         lstofPTterms_4th =self.step2_8(unnecesry,diff4th4mode,fc4th4mode)
-        self.write_csv('fourmode.csv',lstofPTterms_4th,lstofPTterms_4th)
+        #self.write_csv('fourmode.csv',lstofPTterms_4th,lstofPTterms_4th)
+        self.write_csv_mathform('four_math.csv',lstofPTterms_4th,lstofPTterms_4th)
 
     def threemodewvfn(self):
         #the three mode exicted wave function :
@@ -100,7 +101,8 @@ class ThermalAvg:
                 diff4th3mode.append(self.diff4th_origin[i])
         #generalized function for the step 2-8
         lstofPTterms_4th =self.step2_8(unnecesry,diff4th3mode,fc4th3mode)
-        self.write_csv('threemode.csv',lstofPTterms_3rd,lstofPTterms_4th)
+        #self.write_csv('threemode.csv',lstofPTterms_3rd,lstofPTterms_4th)
+        self.write_csv_mathform('three_math.csv',lstofPTterms_3rd,lstofPTterms_4th)
 
     def twomodewvfn(self):
         #the two mode exicted wave function :
@@ -119,7 +121,7 @@ class ThermalAvg:
         #generalized function for the step 2-8
         lstofPTterms_3rd = self.step2_8(unnecesry,diff3rd2mode,fc3rd2mode)
         #4th
-        unnecesry = [2,3]
+        unnecesry = [0,1,2,3]
         fc4th2mode = []
         diff4th2mode = []
         #1, get the diff and fc list under each condition, do 4th 
@@ -131,7 +133,8 @@ class ThermalAvg:
                 diff4th2mode.append(self.diff4th_origin[i])
         #generalized function for the step 2-8
         lstofPTterms_4th = self.step2_8(unnecesry,diff4th2mode,fc4th2mode)
-        self.write_csv('twomode.csv',lstofPTterms_3rd,lstofPTterms_4th)
+        #self.write_csv('twomode.csv',lstofPTterms_3rd,lstofPTterms_4th)
+        self.write_csv_mathform('two_math.csv',lstofPTterms_3rd,lstofPTterms_4th)
 
     def onemodewvfn(self):
         #the one mode exicted wave function thermal average means two things:
@@ -163,7 +166,8 @@ class ThermalAvg:
                 diff4th1mode.append(self.diff4th_origin[i])
         #generalized function for the step 2-8
         lstofPTterms_4th = self.step2_8(unnecesry,diff4th1mode,fc4th1mode)
-        self.write_csv('onemode.csv',lstofPTterms_3rd,lstofPTterms_4th)
+        #self.write_csv('onemode.csv',lstofPTterms_3rd,lstofPTterms_4th)
+        self.write_csv_mathform('one_math.csv',lstofPTterms_3rd,lstofPTterms_4th)
 
 
     def step2_8(self,unnecesry,diffiptlst,fciptlst):
@@ -177,10 +181,11 @@ class ThermalAvg:
         #5, substitute Im with fm.
         for i in range(len(lstofPTterms_revers)):
             lstofPTterms_revers[i].subsIm_fm(self.thermAverules)
-        #6, for each class with same diff, we need to filter out those terms equivalent algebraicly,like Qijj Qijj and  Qikk Qikk, the rule to do that is switching the unnecessary index like for one mode wave fn, k and l is the unnecessary one.
+        #6, for each class with same diff, we need to filter out those terms equivalent algebraicly,like Qijj Qijj and  Qikk Qikk, the rule to do that is switching the unnecessary index like for one mode wave fn, k and l is the unnecessary one. 
+        #XXX Need to update to between classes (different diff), we need to check if we switch the index, the expressions will be the same, then kill one.
         for i in range(len(lstofPTterms_revers)):
             lstofPTterms_revers[i].filteroutovrlap(unnecesry)
-        #XXX 7, do pre-factor calculation(pairing scheme) calculation for each term in each classes.
+        #XXX 7, do pre-factor calculation(pairing scheme) calculation for each term in each classes. Didn't have that in this code, since I prefer to mannully to verify each one.
         for i in range(len(lstofPTterms_revers)):
             lstofPTterms_revers[i].prefactor()
         #XXX we write the latex form in this printout at "3"
@@ -357,6 +362,45 @@ class ThermalAvg:
                     temp = temp.replace('w','\omega_')
                     judge +=1
                     judge = judge%2
+                    outputlist.append(temp)
+            wrtr.writerow(outputlist)
+
+    #this is to numerically verify the algebraic expressions
+    def write_csv_mathform(self,namefile,lstofPTterms_3rd,lstofPTterms_4th):
+        with open(namefile,'w') as csvfile:
+            wrtr = csv.writer(csvfile,delimiter=' ')
+            outputlist = []
+            judge = 0
+            indx = ['i','j','k','l']
+            for i in range(len(lstofPTterms_3rd)):
+                #deal with the latex form and add extra symbol for table
+                eachPT = lstofPTterms_3rd[i]
+                for j in range(len(eachPT.explst_fm_filter)):
+                    temp = str(sym.together(eachPT.explst_fm_filter[j]))
+                    fctemp = eachPT.fclst_filter[j]
+                    firstpart = r'FCQ3['+indx[0]*fctemp[0]+indx[1]*fctemp[1]+indx[2]*fctemp[2]+r']'
+                    secondpart =r'FCQ3['+indx[0]*fctemp[3]+indx[1]*fctemp[4]+indx[2]*fctemp[5]+r']'
+                    if (firstpart == secondpart):
+                        temp = firstpart+r'**2'+'*'+temp
+                    else:
+                        temp = firstpart+'*'+secondpart+'*'+temp
+                    outputlist.append(temp)
+            wrtr.writerow(outputlist)
+            outputlist = []
+            judge = 0
+            indx = ['i','j','k','l']
+            for i in range(len(lstofPTterms_4th)):
+                #deal with the latex form and add extra symbol for table
+                eachPT = lstofPTterms_4th[i]
+                for j in range(len(eachPT.explst_fm_filter)):
+                    temp = str(sym.together(eachPT.explst_fm_filter[j]))
+                    fctemp = eachPT.fclst_filter[j]
+                    firstpart =r'FCQ4['+indx[0]*fctemp[0]+indx[1]*fctemp[1]+indx[2]*fctemp[2]+indx[3]*fctemp[3] +r']'
+                    secondpart =r'FCQ4['+ indx[0]*fctemp[4]+indx[1]*fctemp[5]+indx[2]*fctemp[6]+indx[3]*fctemp[7]+r']'
+                    if (firstpart == secondpart):
+                        temp = firstpart+r'**2'+'*'+temp
+                    else:
+                        temp = firstpart+'*'+secondpart+'*'+temp
                     outputlist.append(temp)
             wrtr.writerow(outputlist)
 
