@@ -84,21 +84,21 @@ class Numerical:
                 if (j!=i):
                     S01 += -3*FCQ3[i,j,j]**2*(8*f[j]**2 + 8*f[j] + 1)/(12*w[i])
                     S02 += -FCQ3[i,j,j]*FCQ3[i,i,i]*(4*f[i]*f[j] + 2*f[i] + 2*f[j] + 1)/(2*w[i])
+                    S04 += -FCQ4[i,i,j,j]**2*(16*f[i]*f[j]**2 + 16*f[i]*f[j] + 2*f[i] + 8*f[j]**2 + 8*f[j] + 1)/(16*w[i]) #6*6
+                    S05 += -FCQ4[i,i,j,j]*FCQ4[i,i,i,i]*(8*f[i]**2*f[j] + 4*f[i]**2 + 8*f[i]*f[j] + 4*f[i] + 2*f[j] + 1)/(8*w[i])#6*1*2
                     D01 += -3*FCQ3[i,j,j]**2*(f[i] + f[j]**2 + 2*f[j]*(f[i] + 1) + 1)/(6*(w[i] + 2*w[j]))
                     D09 +=  3*FCQ3[i,j,j]**2*(2*f[i]*f[j] + f[i] - f[j]**2)/(6*(w[i] - 2*w[j])) 
                     
                     A02 +=  FCQ4[i,i,j,j]*(2*f[i]+1)*(2*f[j]+1)/8
 
-                    D16 +=  FCQ4[i,j,j,j]**2*(f[i] + 6*f[j]*(f[i]*f[j] + f[i] - f[j]**2 - f[j]) - f[j])/(16*(w[i] - w[j]))
-                    D13 += -FCQ4[i,i,j,j]**2*(2*f[i]**2*f[j] + f[i]**2 + 2*f[i]*f[j]**2 + 4*f[i]*f[j] + 2*f[i] + f[j]**2 + 2*f[j] + 1)/(48*(w[i] + w[j]))
-                    D14 +=  FCQ4[i,i,j,j]**2*(f[i]**2 + 2*f[i]*f[j]*(f[i] - f[j]) - f[j]**2)/(48*(w[i] - w[j]))
-                    D06 +=  FCQ4[i,j,j,j]*FCQ4[i,i,i,j]*(2*f[i]**2 + 4*f[i]*f[j]*(f[i] - f[j]) + f[i] - 2*f[j]**2 - f[j])/(8*(w[i] - w[j]))
-                    D15 += -FCQ4[i,j,j,j]**2*(f[i] + 12*f[j]**2 + 6*f[j]*(f[i]*f[j] + f[i] + f[j]**2) + 7*f[j] + 1)/(16*(w[i] + w[j]))
-                    D05 += -FCQ4[i,j,j,j]*FCQ4[i,i,i,j]*(2*f[i]**2 + 4*f[i]*f[j]*(f[i] + f[j]) + 8*f[i]*f[j] + 3*f[i] + 2*f[j]**2 + 3*f[j] + 1)/(8*(w[i] + w[j]))
-                    D11 += -FCQ4[i,j,j,j]**2*(f[i] + f[j]**3 + 3*f[j]*(f[i]*f[j] + f[i] + f[j] + 1) + 1)/(24*(w[i] + 3*w[j]))
-                    D12 +=  FCQ4[i,j,j,j]**2*(3*f[i]*f[j]*(f[j] + 1) + f[i] - f[j]**3)/(24*(w[i] - 3*w[j]))
-                    S04 += -FCQ4[i,i,j,j]**2*(16*f[i]*f[j]**2 + 16*f[i]*f[j] + 2*f[i] + 8*f[j]**2 + 8*f[j] + 1)/(96*w[i]) 
-                    S05 += -FCQ4[i,i,j,j]*FCQ4[i,i,i,i]*(8*f[i]**2*f[j] + 4*f[i]**2 + 8*f[i]*f[j] + 4*f[i] + 2*f[j] + 1)/(96*w[i])
+                    D13 += -FCQ4[i,i,j,j]**2*(2*f[i]**2*f[j] + f[i]**2 + 2*f[i]*f[j]**2 + 4*f[i]*f[j] + 2*f[i] + f[j]**2 + 2*f[j] + 1)/(8*(w[i] + w[j]))#XXX 6*6 
+                    D14 +=  FCQ4[i,i,j,j]**2*(f[i]**2 + 2*f[i]*f[j]*(f[i] - f[j]) - f[j]**2)/(8*(w[i] - w[j]))# 6*6
+                    D15 += -FCQ4[i,j,j,j]**2*(f[i] + 12*f[j]**2 + 6*f[j]*(f[i]*f[j] + f[i] + f[j]**2) + 7*f[j] + 1)/(4*(w[i] + w[j]))#4*4
+                    D16 +=  FCQ4[i,j,j,j]**2*(f[i] + 6*f[j]*(f[i]*f[j] + f[i] - f[j]**2 - f[j]) - f[j])/(4*(w[i] - w[j]))#4*4
+                    D05 += -FCQ4[i,j,j,j]*FCQ4[i,i,i,j]*(2*f[i]**2 + 4*f[i]*f[j]*(f[i] + f[j]) + 8*f[i]*f[j] + 3*f[i] + 2*f[j]**2 + 3*f[j] + 1)/(2*(w[i] + w[j]))#4*4*2
+                    D06 +=  FCQ4[i,j,j,j]*FCQ4[i,i,i,j]*(2*f[i]**2 + 4*f[i]*f[j]*(f[i] - f[j]) + f[i] - 2*f[j]**2 - f[j])/(2*(w[i] - w[j]))# 4*4*2
+                    D11 += -FCQ4[i,j,j,j]**2*(f[i] + f[j]**3 + 3*f[j]*(f[i]*f[j] + f[i] + f[j] + 1) + 1)/(6*(w[i] + 3*w[j]))#4*4
+                    D12 +=  FCQ4[i,j,j,j]**2*(3*f[i]*f[j]*(f[j] + 1) + f[i] - f[j]**3)/(6*(w[i] - 3*w[j]))#4*4
                 for k in range(nmode):
                     if( k!= i and k!=j and j!=i):
                         S07 += -FCQ3[i,k,k]*FCQ3[i,j,j]*(4*f[j]*f[k] + 2*f[j] + 2*f[k] + 1)/(4*w[i])
@@ -107,17 +107,16 @@ class Numerical:
                         T02 +=  FCQ3[i,j,k]**2*(-f[i]*f[j] + f[i]*f[k] - f[j]*f[k] - f[j])/(w[i] - w[j] + w[k])/6
                         T06 +=  FCQ3[i,j,k]**2*(f[i]*f[j] + f[i]*f[k] + f[i] - f[j]*f[k])/(w[i] - w[j] - w[k])/6
 
-                        D10 +=  FCQ4[i,j,k,k]**2*(f[i] - f[j] + 8*f[k]*(f[i]*f[k] + f[i] - f[j]*f[k] - f[j]))/(48*(w[i] - w[j]))
-                        D04 +=  FCQ4[i,j,k,k]*FCQ4[i,j,j,j]*(2*f[i]*f[j] + 2*f[i]*f[k] + f[i] - 2*f[j]**2 + 4*f[j]*f[k]*(f[i] - f[j]) - 2*f[j]*f[k] - f[j])/(8*(w[i] - w[j]))
-                        D02 += -FCQ4[i,j,k,k]**2*(f[i] + f[j] + 8*f[k]*(f[i]*f[k] + f[i] + f[j]*f[k] + f[j] + f[k] + 1) + 1)/(48*(w[i] + w[j]))
-                        D03 += -FCQ4[i,j,k,k]*FCQ4[i,j,j,j]*(2*f[i]*f[j] + 2*f[i]*f[k] + f[i] + 2*f[j]**2 + 4*f[j]*f[k]*(f[i] + f[j]) + 6*f[j]*f[k] + 3*f[j] + 2*f[k] + 1)/(8*(w[i] + w[j]))
-                        print("S09",i,j,k,-FCQ4[i,i,j,j]*FCQ4[i,i,k,k]*(8*f[i]*f[k]*f[j] + 4*f[i]*f[k] + 4*f[i]*f[j] + 2*f[i] + 4*f[k]*f[j] + 2*f[k] + 2*f[j] + 1)/(16*w[i]))
+                        D10 +=  FCQ4[i,j,k,k]**2*(f[i] - f[j] + 8*f[k]*(f[i]*f[k] + f[i] - f[j]*f[k] - f[j]))/(16*(w[i] - w[j]))#6 * 6/576
+                        D02 += -FCQ4[i,j,k,k]**2*(f[i] + f[j] + 8*f[k]*(f[i]*f[k] + f[i] + f[j]*f[k] + f[j] + f[k] + 1) + 1)/(16*(w[i] + w[j]))#6 * 6 /576
+                        D03 += -FCQ4[i,j,k,k]*FCQ4[i,j,j,j]*(2*f[i]*f[j] + 2*f[i]*f[k] + f[i] + 2*f[j]**2 + 4*f[j]*f[k]*(f[i] + f[j]) + 6*f[j]*f[k] + 3*f[j] + 2*f[k] + 1)/(4*(w[i] + w[j]))#6*4*2
+                        D04 +=  FCQ4[i,j,k,k]*FCQ4[i,j,j,j]*(2*f[i]*f[j] + 2*f[i]*f[k] + f[i] - 2*f[j]**2 + 4*f[j]*f[k]*(f[i] - f[j]) - 2*f[j]*f[k] - f[j])/(4*(w[i] - w[j]))#6*4*2
 
-                        S09 += -FCQ4[i,i,j,j]*FCQ4[i,i,k,k]*(8*f[i]*f[k]*f[j] + 4*f[i]*f[k] + 4*f[i]*f[j] + 2*f[i] + 4*f[k]*f[j] + 2*f[k] + 2*f[j] + 1)/(16*w[i])
-                        T03 += -FCQ4[i,j,k,k]**2*(f[i]*f[j] + f[i]*f[k]**2 + f[i] + f[j]*f[k]**2 + f[j] + f[k]**2 + 2*f[k]*(f[i]*f[j] + f[i] + f[j] + 1) + 1)/(24*(w[i] + w[j] + 2*w[k]))
-                        T07 +=  FCQ4[i,j,k,k]**2*(2*f[i]*f[j]*f[k] + f[i]*f[j] - f[i]*f[k]**2 - f[j]*f[k]**2 - f[k]**2)/(24*(w[i] + w[j] - 2*w[k]))
-                        T04 += -FCQ4[i,j,k,k]**2*(f[i]*f[j] - f[i]*f[k]**2 + f[j]*f[k]**2 + 2*f[j]*f[k]*(f[i] + 1) + f[j])/(24*(w[i] - w[j] + 2*w[k]))
-                        T08 +=  FCQ4[i,j,k,k]**2*(f[i]*f[j] + f[i]*f[k]**2 + 2*f[i]*f[k]*(f[j] + 1) + f[i] - f[j]*f[k]**2)/(24*(w[i] - w[j] - 2*w[k]))
+                        S09 += -FCQ4[i,i,j,j]*FCQ4[i,i,k,k]*(8*f[i]*f[k]*f[j] + 4*f[i]*f[k] + 4*f[i]*f[j] + 2*f[i] + 4*f[k]*f[j] + 2*f[k] + 2*f[j] + 1)/(16*w[i])#6*6
+                        T03 += -FCQ4[i,j,k,k]**2*(f[i]*f[j] + f[i]*f[k]**2 + f[i] + f[j]*f[k]**2 + f[j] + f[k]**2 + 2*f[k]*(f[i]*f[j] + f[i] + f[j] + 1) + 1)/(8*(w[i] + w[j] + 2*w[k]))#XXX not sure
+                        T07 +=  FCQ4[i,j,k,k]**2*(2*f[i]*f[j]*f[k] + f[i]*f[j] - f[i]*f[k]**2 - f[j]*f[k]**2 - f[k]**2)/(8*(w[i] + w[j] - 2*w[k]))
+                        T04 += -FCQ4[i,j,k,k]**2*(f[i]*f[j] - f[i]*f[k]**2 + f[j]*f[k]**2 + 2*f[j]*f[k]*(f[i] + 1) + f[j])/(8*(w[i] - w[j] + 2*w[k]))
+                        T08 +=  FCQ4[i,j,k,k]**2*(f[i]*f[j] + f[i]*f[k]**2 + 2*f[i]*f[k]*(f[j] + 1) + f[i] - f[j]*f[k]**2)/(8*(w[i] - w[j] - 2*w[k]))
                     for l in range(nmode):
                         if(l!=i and l!=j and l!=k and i!=j and i!=k and j!=k):
                             D07 += -FCQ4[i,j,l,l]*FCQ4[i,j,k,k]*(2*f[i]*f[k] + 2*f[i]*f[l] + f[i] + 2*f[j]*f[k] + 2*f[j]*f[l] + f[j] + 4*f[k]*f[l]*(f[i] + f[j] + 1) + 2*f[k] + 2*f[l] + 1)/(8*(w[i] + w[j]))
@@ -139,8 +138,8 @@ class Numerical:
         #print("3rd....")
         #print(result3rd)
         print("4th....")
-        #print(result4th)
-        print(S09)
+        print(result4th)
+        #print(D03+D04)
 
         #print(result)
 
@@ -173,6 +172,7 @@ class Numerical:
                     for l in range(nmode):
                         if(i!=j):
                             B2N+= -FCQ4[i,j,k,k]*FCQ4[i,j,l,l]*(2*f[k]+1)*(2*f[l]+1)*(w[i]*(2*f[j]+1) - w[j]*(2*f[i]+1))/(w[i]**2-w[j]**2)/8
+
                         D1 += -FCQ4[i,j,k,l]**2*(f[i]*f[k]*(f[j]+f[l]+1)+f[i]*(f[l]+1)*(f[j]+1)-f[k]*f[j]*f[l])/(-w[i]+w[j]+w[k]+w[l])/24
                         if (-w[i] + w[j] + w[k] - w[l]!= 0 ):
                             D2 += -FCQ4[i,j,k,l]**2*(f[i]*f[l]*(f[k]+f[j]+1)-f[j]*f[k]*(f[i]+f[l]+1))/(-w[i]+w[j]+w[k]-w[l])/24
@@ -190,8 +190,7 @@ class Numerical:
         #print("3rd....")
         #print(GFresult3rd)
         print("4th....")
-        #print(GFresult4th)
-        print(B2D)
+        print(GFresult4th)
 
 
     def readSindoPES(self,filepath,nmode):
