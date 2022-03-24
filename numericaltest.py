@@ -26,7 +26,7 @@ class Numerical:
         self.GFnumeric(w,f,FCQ3,FCQ4,nmode)
 
 #S: singly D:doubly T:triply Q:quadruply the name match with the ones in the table:S01:1.01
-
+# there are two set of naming system, the one we used here is in the first draft table, the one I marked in the commment is in the updated draft table.
     def FTPTnumeric(self,w,f,FCQ3,FCQ4,nmode):
         A01 = 0
         A02 = 0
@@ -73,21 +73,21 @@ class Numerical:
         Q07 = 0
         Q08 = 0
         for i in range(nmode):
-            S08 += -FCQ3[i,i,i]**2*(6*f[i]**2 + 6*f[i] + 1)/(4*w[i]) 
-            S03 += -FCQ3[i,i,i]**2*(3*f[i]**2 + 3*f[i] + 1)/(18*w[i])
+            S08 += -FCQ3[i,i,i]**2*(6*f[i]**2 + 6*f[i] + 1)/(4*w[i])  #S04
+            S03 += -FCQ3[i,i,i]**2*(3*f[i]**2 + 3*f[i] + 1)/(18*w[i]) #S05
 
             A01 += FCQ4[i,i,i,i]*(2*f[i]+1)**2/8
 
-            S10 += -FCQ4[i,i,i,i]**2*(32*f[i]**3 + 48*f[i]**2 + 22*f[i] + 3)/(48*w[i])
-            S06 += -FCQ4[i,i,i,i]**2*(4*f[i]**3 + 6*f[i]**2 + 4*f[i] + 1)/(96*w[i])
+            S10 += -FCQ4[i,i,i,i]**2*(32*f[i]**3 + 48*f[i]**2 + 22*f[i] + 3)/(48*w[i]) #S09
+            S06 += -FCQ4[i,i,i,i]**2*(4*f[i]**3 + 6*f[i]**2 + 4*f[i] + 1)/(96*w[i]) #S10
             for j in range(nmode):
                 if (j!=i):
-                    S01 += -3*FCQ3[i,j,j]**2*(8*f[j]**2 + 8*f[j] + 1)/(12*w[i])
-                    S02 += -FCQ3[i,j,j]*FCQ3[i,i,i]*(4*f[i]*f[j] + 2*f[i] + 2*f[j] + 1)/(2*w[i])
-                    S04 += -FCQ4[i,i,j,j]**2*(16*f[i]*f[j]**2 + 16*f[i]*f[j] + 2*f[i] + 8*f[j]**2 + 8*f[j] + 1)/(16*w[i]) #6*6
-                    S05 += -FCQ4[i,i,j,j]*FCQ4[i,i,i,i]*(8*f[i]**2*f[j] + 4*f[i]**2 + 8*f[i]*f[j] + 4*f[i] + 2*f[j] + 1)/(8*w[i])#6*1*2
-                    D01 += -3*FCQ3[i,j,j]**2*(f[i] + f[j]**2 + 2*f[j]*(f[i] + 1) + 1)/(6*(w[i] + 2*w[j]))
-                    D09 +=  3*FCQ3[i,j,j]**2*(2*f[i]*f[j] + f[i] - f[j]**2)/(6*(w[i] - 2*w[j])) 
+                    S01 += -3*FCQ3[i,j,j]**2*(8*f[j]**2 + 8*f[j] + 1)/(12*w[i]) #S03
+                    S02 += -FCQ3[i,j,j]*FCQ3[i,i,i]*(4*f[i]*f[j] + 2*f[i] + 2*f[j] + 1)/(2*w[i])#S02
+                    S04 += -FCQ4[i,i,j,j]**2*(16*f[i]*f[j]**2 + 16*f[i]*f[j] + 2*f[i] + 8*f[j]**2 + 8*f[j] + 1)/(16*w[i]) #6*6 S08
+                    S05 += -FCQ4[i,i,j,j]*FCQ4[i,i,i,i]*(8*f[i]**2*f[j] + 4*f[i]**2 + 8*f[i]*f[j] + 4*f[i] + 2*f[j] + 1)/(8*w[i])#6*1*2 S07
+                    D01 += -3*FCQ3[i,j,j]**2*(f[i] + f[j]**2 + 2*f[j]*(f[i] + 1) + 1)/(6*(w[i] + 2*w[j])) #D01
+                    D09 +=  3*FCQ3[i,j,j]**2*(2*f[i]*f[j] + f[i] - f[j]**2)/(6*(w[i] - 2*w[j])) #D02 
                     
                     A02 +=  FCQ4[i,i,j,j]*(2*f[i]+1)*(2*f[j]+1)/8
 
@@ -101,21 +101,21 @@ class Numerical:
                     D12 +=  2*FCQ4[i,j,j,j]**2*(3*f[i]*f[j]*(f[j] + 1) + f[i] - f[j]**3)/(12*(w[i] - 3*w[j]))#4*4*2
                 for k in range(nmode):
                     if( k!= i and k!=j and j!=i):
-                        S07 += -FCQ3[i,k,k]*FCQ3[i,j,j]*(4*f[j]*f[k] + 2*f[j] + 2*f[k] + 1)/(4*w[i])
+                        S07 += -FCQ3[i,k,k]*FCQ3[i,j,j]*(4*f[j]*f[k] + 2*f[j] + 2*f[k] + 1)/(4*w[i]) #S01
                         T01 += -FCQ3[i,j,k]**2*(f[i]*f[j] + f[i]*f[k] + f[i] + f[j]*f[k] + f[j] + f[k] + 1)/(w[i] + w[j] + w[k])/6
-                        T05 +=  FCQ3[i,j,k]**2*(f[i]*f[j] - f[i]*f[k] - f[j]*f[k] - f[k])/(w[i] + w[j] - w[k])/6
+                        T05 +=  FCQ3[i,j,k]**2*(f[i]*f[j] - f[i]*f[k] - f[j]*f[k] - f[k])/(w[i] + w[j] - w[k])/6 #T03
                         T02 +=  FCQ3[i,j,k]**2*(-f[i]*f[j] + f[i]*f[k] - f[j]*f[k] - f[j])/(w[i] - w[j] + w[k])/6
-                        T06 +=  FCQ3[i,j,k]**2*(f[i]*f[j] + f[i]*f[k] + f[i] - f[j]*f[k])/(w[i] - w[j] - w[k])/6
+                        T06 +=  FCQ3[i,j,k]**2*(f[i]*f[j] + f[i]*f[k] + f[i] - f[j]*f[k])/(w[i] - w[j] - w[k])/6 #T04
 
                         D10 +=  FCQ4[i,j,k,k]**2*(f[i] - f[j] + 8*f[k]*(f[i]*f[k] + f[i] - f[j]*f[k] - f[j]))/(8*(w[i] - w[j]))#6 * 6???XXX 
-                        D02 += -FCQ4[i,j,k,k]**2*(f[i] + f[j] + 8*f[k]*(f[i]*f[k] + f[i] + f[j]*f[k] + f[j] + f[k] + 1) + 1)/(8*(w[i] + w[j]))#6 * 6 ???
+                        D02 += -FCQ4[i,j,k,k]**2*(f[i] + f[j] + 8*f[k]*(f[i]*f[k] + f[i] + f[j]*f[k] + f[j] + f[k] + 1) + 1)/(8*(w[i] + w[j]))#6 * 6 ??? D09
                         D03 += -FCQ4[i,j,k,k]*FCQ4[i,j,j,j]*(2*f[i]*f[j] + 2*f[i]*f[k] + f[i] + 2*f[j]**2 + 4*f[j]*f[k]*(f[i] + f[j]) + 6*f[j]*f[k] + 3*f[j] + 2*f[k] + 1)/(2*(w[i] + w[j]))#6*4*2*2
                         D04 +=  FCQ4[i,j,k,k]*FCQ4[i,j,j,j]*(2*f[i]*f[j] + 2*f[i]*f[k] + f[i] - 2*f[j]**2 + 4*f[j]*f[k]*(f[i] - f[j]) - 2*f[j]*f[k] - f[j])/(2*(w[i] - w[j]))#6*4*2*2
 
-                        S09 += -FCQ4[i,i,j,j]*FCQ4[i,i,k,k]*(8*f[i]*f[k]*f[j] + 4*f[i]*f[k] + 4*f[i]*f[j] + 2*f[i] + 4*f[k]*f[j] + 2*f[k] + 2*f[j] + 1)/(16*w[i])#6*6
-                        T03 += -2*FCQ4[i,j,k,k]**2*(f[i]*f[j] + f[i]*f[k]**2 + f[i] + f[j]*f[k]**2 + f[j] + f[k]**2 + 2*f[k]*(f[i]*f[j] + f[i] + f[j] + 1) + 1)/(8*(w[i] + w[j] + 2*w[k]))# 6*6 *2 can't believe this 2
+                        S09 += -FCQ4[i,i,j,j]*FCQ4[i,i,k,k]*(8*f[i]*f[k]*f[j] + 4*f[i]*f[k] + 4*f[i]*f[j] + 2*f[i] + 4*f[k]*f[j] + 2*f[k] + 2*f[j] + 1)/(16*w[i])#6*6 S06
+                        T03 += -2*FCQ4[i,j,k,k]**2*(f[i]*f[j] + f[i]*f[k]**2 + f[i] + f[j]*f[k]**2 + f[j] + f[k]**2 + 2*f[k]*(f[i]*f[j] + f[i] + f[j] + 1) + 1)/(8*(w[i] + w[j] + 2*w[k]))# 6*6 *2 can't believe this 2 T05
                         T07 +=  2*FCQ4[i,j,k,k]**2*(2*f[i]*f[j]*f[k] + f[i]*f[j] - f[i]*f[k]**2 - f[j]*f[k]**2 - f[k]**2)/(8*(w[i] + w[j] - 2*w[k]))
-                        T04 += -2*FCQ4[i,j,k,k]**2*(f[i]*f[j] - f[i]*f[k]**2 + f[j]*f[k]**2 + 2*f[j]*f[k]*(f[i] + 1) + f[j])/(8*(w[i] - w[j] + 2*w[k]))
+                        T04 += -2*FCQ4[i,j,k,k]**2*(f[i]*f[j] - f[i]*f[k]**2 + f[j]*f[k]**2 + 2*f[j]*f[k]*(f[i] + 1) + f[j])/(8*(w[i] - w[j] + 2*w[k])) #T06
                         T08 +=  2*FCQ4[i,j,k,k]**2*(f[i]*f[j] + f[i]*f[k]**2 + 2*f[i]*f[k]*(f[j] + 1) + f[i] - f[j]*f[k]**2)/(8*(w[i] - w[j] - 2*w[k]))
                     for l in range(nmode):
                         if(l!=i and l!=j and l!=k and i!=j and i!=k and j!=k):
@@ -138,11 +138,11 @@ class Numerical:
         #print("3rd....")
         #print(result3rd)
         print("4th....")
-        print(result4th)
+        #print(result4th)
         #print(D12+D11)
         #print(D15+D16)
         #print(D03+D04)
-        print(D05+D06)
+        #print(D05+D06)
         #print(S04+D13+D14)
         #print(D02+D10+T03+T04+T07+T08)
         #print(T03+T04+T07+T08)
@@ -275,8 +275,8 @@ class Numerical:
                             if (w[i] + w[j] - w[k] - w[l]!= 0 ):
                                 GP8 += -FCQ4[i,j,k,l]**2*(f[k]*f[l]*(f[j]+f[i]+1)-f[i]*f[j]*(f[l]+f[k]+1))/(w[i]+w[j]-w[k]-w[l])/24
                         D1 += -FCQ4[i,j,k,l]**2*(f[i]*f[k]*(f[j]+f[l]+1)+f[i]*(f[l]+1)*(f[j]+1)-f[k]*f[j]*f[l])/(-w[i]+w[j]+w[k]+w[l])/24
-                        D3 += -FCQ4[i,j,k,l]**2*(f[l]*f[k]*(f[j]+f[i]+1)+f[l]*(f[i]+1)*(f[j]+1)-f[i]*f[j]*f[k])/(w[i]+w[j]+w[k]-w[l])/24
                         D4 += -FCQ4[i,j,k,l]**2*((f[k]+1)*(f[i]+1)*(f[l]+1)*(f[j]+1)-f[i]*f[j]*f[k]*f[l])/(w[i]+w[j]+w[k]+w[l])/24
+                        D3 += -FCQ4[i,j,k,l]**2*(f[l]*f[k]*(f[j]+f[i]+1)+f[l]*(f[i]+1)*(f[j]+1)-f[i]*f[j]*f[k])/(w[i]+w[j]+w[k]-w[l])/24
                         D6 += -FCQ4[i,j,k,l]**2*(f[k]*f[j]*(f[i]+f[l]+1)+f[j]*(f[i]+1)*(f[l]+1)-f[i]*f[k]*f[l])/(w[i]-w[j]+w[k]+w[l])/24
                         D8 += -FCQ4[i,j,k,l]**2*(f[k]*(f[i]+1)*(f[j]+1)*(f[l]+1)-f[i]*f[j]*f[l]*(f[k]+1))/(w[i]+w[j]-w[k]+w[l])/24
                         if (-w[i] + w[j] - w[k] + w[l]!= 0 ):
@@ -296,9 +296,9 @@ class Numerical:
         #print(6*(D4+D5)) 2.13 2.14This six I am not sure. If there are no other bugs then should be this one 
         #print(B2D+3*(D3+D8+D1+D6)) #1.04 
         #print(B2N + 6*(D2+D3+D7+D8)) #2.02 2.10
-        #print(6*(D5+D6+D4+D1))# 3.03 04 07 08
-        #print(2*(D1+D4)) #2.11 12
-        #print(B2N + 2*(D2+D3+D5+D6+D7+D8))# 2.15 2.16
+        print(6*(D5+D6+D4+D1))# 3.03 04 07 08
+        #print(4*(D1+D4)) #2.11 12
+        #print(2*B2N + 4*(D2+D3+D5+D6+D7+D8))# 2.15 2.16
         #print(B2N*2) 2.03 2.04
         #print(B2N*4) #2.05 2.06
         #----------------
@@ -306,9 +306,9 @@ class Numerical:
         #print(B2N)
         #print(GP4+GP5+GP6+GP7)
         #print(GP4+GP5+GP9+GP8)
-        print(B2N+B2D+D1 +D2 +D3 +D4 +D5 +D6 +D7 +D8)
+        #print(B2N+B2D+D1 +D2 +D3 +D4 +D5 +D6 +D7 +D8)
         #print(GP2+GP3+GP9+GP8)
-        print(GP2+GP3+GP4+GP5+GP6+GP7+GP8+GP9)
+        #print(GP2+GP3+GP4+GP5+GP6+GP7+GP8+GP9)
 
     def readSindoPES(self,filepath,nmode):
         w_omega = np.zeros(nmode)

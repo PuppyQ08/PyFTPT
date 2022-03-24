@@ -50,9 +50,22 @@ class ThermalAvg:
         self.BornHuangrules = self.BHruleeval()#return a list of dict
         #start with one mode excited wave function
         #self.onemodewvfn()
-        self.twomodewvfn()
+        #self.twomodewvfn()
         #self.threemodewvfn()
         #self.fourmodewvfn()
+
+        #this is the test running for draft
+        temp = self.BornHuangrules[D1*Qi**1]
+        tempa = self.BornHuangrules[D1*Qi**3]
+        print(sym.expand(temp*tempa))
+        #temp1 = sym.together(sym.expand(temp**2).subs(self.thermAverules))
+        temp1 = sym.together(sym.expand(temp*tempa).subs(self.thermAverules))
+        (num,den) = sym.fraction(temp1)
+        temp2 = sym.latex(sym.expand(num)/den)
+        temp2 = temp2.replace('fi','f_i')
+        
+        temp2 = temp2.replace('wi','\omega_i')
+        print(temp2)
 
     def fourmodewvfn(self):
         #the four mode exicted wave function :
