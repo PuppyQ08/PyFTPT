@@ -53,13 +53,58 @@ class ListofPTterms:
     def prefactor(self):
         for i in range(len(self.fclst_filter)):
             if (len(self.fclst_filter[i]) == 6):
-                self.explst_fm_filter[i] *= sym.Rational(1,math.factorial(3)**2)
+                #self.explst_fm_filter[i] *= sym.Rational(1,math.factorial(3)**2)
+                #XXX we use sorted fc instead as in our papers and xvscf paper
+                self.explst_fm_filter[i] *= self.prefactnum(self.fclst_filter[i])
+                #scale the force constants
                 self.explst_fm_filter[i] *= 8*sym.sqrt(self.freqlst[0]**self.fclst_filter[i][0]*self.freqlst[1]**self.fclst_filter[i][1]*self.freqlst[2]**self.fclst_filter[i][2]*self.freqlst[0]**self.fclst_filter[i][3]*self.freqlst[1]**self.fclst_filter[i][4]*self.freqlst[2]**self.fclst_filter[i][5])
                 self.explst_fm_filter[i] = sym.simplify(self.explst_fm_filter[i])
             elif (len(self.fclst_filter[i]) == 8):
-                self.explst_fm_filter[i] *= sym.Rational(1,math.factorial(4)**2)
+                #self.explst_fm_filter[i] *= sym.Rational(1,math.factorial(4)**2)
+                self.explst_fm_filter[i] *= self.prefactnum(self.fclst_filter[i])
+                #scale the force constants
                 self.explst_fm_filter[i] *= 16*sym.sqrt(self.freqlst[0]**self.fclst_filter[i][0]*self.freqlst[1]**self.fclst_filter[i][1]*self.freqlst[2]**self.fclst_filter[i][2]*self.freqlst[3]**self.fclst_filter[i][3]*self.freqlst[0]**self.fclst_filter[i][4]*self.freqlst[1]**self.fclst_filter[i][5]*self.freqlst[2]**self.fclst_filter[i][6]*self.freqlst[3]**self.fclst_filter[i][7])
                 self.explst_fm_filter[i] = sym.simplify(self.explst_fm_filter[i])
+
+    def prefactnum(self,fcipt):
+        # we use the product of the number to determine the combination:
+        #like [2,1,1,0]for fcipt, product = 2, would multiply forthchart[2]
+        prefret = 1
+        thirdchart = [0,sym.Rational(1,6),sym.Rational(1,2),sym.Rational(1,6)]
+        forthchart = [sym.Rational(1,8),sym.Rational(1,24),sym.Rational(1,4),sym.Rational(1,6),sym.Rational(1,24)]
+        if(len(fcipt==6)):
+            product = 1
+            for i in range(3):
+               if(fcipt[i]!=0):
+                   product*=fcipt[i]
+            prefret *= thirdchart[product]
+            product = 1
+            for i in range(3,6):
+               if(fcipt[i]!=0):
+                   product*=fcipt[i]
+            prefret *= thirdchart[product]
+        if(len(fcipt==8)):
+            product = 1
+            count=0
+            for i in range(4):
+               if(fcipt[i]!=0):
+                   count+=1
+                   product*=fcipt[i]
+            if(product==4 and count==2):
+                product=0
+            prefret *= forthchart[product]
+            product = 1
+            count=0
+            for i in range(4,8):
+               if(fcipt[i]!=0):
+                   count+=1
+                   product*=fcipt[i]
+            if(product==4 and count==2):
+                product=0
+            prefret *= forthchart[product]
+        return prefret
+            
+
 
     def mergesamediff(self,PTterms):
         fclst = PTterms.fclst
