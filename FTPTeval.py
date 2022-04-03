@@ -50,22 +50,22 @@ class ThermalAvg:
         self.BornHuangrules = self.BHruleeval()#return a list of dict
         #start with one mode excited wave function
         #self.onemodewvfn()
-        #self.twomodewvfn()
-        #self.threemodewvfn()
-        #self.fourmodewvfn()
+        self.twomodewvfn()
+        self.threemodewvfn()
+        self.fourmodewvfn()
 
         #this is the test running for draft
-        temp = self.BornHuangrules[D1*Qi**1]
-        tempa = self.BornHuangrules[D1*Qi**3]
-        print(sym.expand(temp*tempa))
-        #temp1 = sym.together(sym.expand(temp**2).subs(self.thermAverules))
-        temp1 = sym.together(sym.expand(temp*tempa).subs(self.thermAverules))
-        (num,den) = sym.fraction(temp1)
-        temp2 = sym.latex(sym.expand(num)/den)
-        temp2 = temp2.replace('fi','f_i')
+        #temp = self.BornHuangrules[D1*Qi**1]
+        #tempa = self.BornHuangrules[D1*Qi**3]
+        #print(sym.expand(temp*tempa))
+        ##temp1 = sym.together(sym.expand(temp**2).subs(self.thermAverules))
+        #temp1 = sym.together(sym.expand(temp*tempa).subs(self.thermAverules))
+        #(num,den) = sym.fraction(temp1)
+        #temp2 = sym.latex(sym.expand(num)/den)
+        #temp2 = temp2.replace('fi','f_i')
         
-        temp2 = temp2.replace('wi','\omega_i')
-        print(temp2)
+        #temp2 = temp2.replace('wi','\omega_i')
+        #print(temp2)
 
     def fourmodewvfn(self):
         #the four mode exicted wave function :
@@ -83,8 +83,8 @@ class ThermalAvg:
                 diff4th4mode.append(self.diff4th_origin[i])
         #generalized function for the step 2-8
         lstofPTterms_4th =self.step2_8(unnecesry,diff4th4mode,fc4th4mode)
-        #self.write_csv('fourmode.csv',lstofPTterms_4th,lstofPTterms_4th)
-        self.write_csv_mathform('four_math.csv',lstofPTterms_4th,lstofPTterms_4th)
+        self.write_csv('fourmode_latex.csv',lstofPTterms_4th,lstofPTterms_4th)
+        #self.write_csv_mathform('four_math.csv',lstofPTterms_4th,lstofPTterms_4th)
 
     def threemodewvfn(self):
         #the three mode exicted wave function :
@@ -114,8 +114,8 @@ class ThermalAvg:
                 diff4th3mode.append(self.diff4th_origin[i])
         #generalized function for the step 2-8
         lstofPTterms_4th =self.step2_8(unnecesry,diff4th3mode,fc4th3mode)
-        #self.write_csv('threemode.csv',lstofPTterms_3rd,lstofPTterms_4th)
-        self.write_csv_mathform('three_math.csv',lstofPTterms_3rd,lstofPTterms_4th)
+        self.write_csv('threemode_latex.csv',lstofPTterms_3rd,lstofPTterms_4th)
+        #self.write_csv_mathform('three_math.csv',lstofPTterms_3rd,lstofPTterms_4th)
 
     def twomodewvfn(self):
         #the two mode exicted wave function :
@@ -146,8 +146,8 @@ class ThermalAvg:
                 diff4th2mode.append(self.diff4th_origin[i])
         #generalized function for the step 2-8
         lstofPTterms_4th = self.step2_8(unnecesry,diff4th2mode,fc4th2mode)
-        #self.write_csv('twomode.csv',lstofPTterms_3rd,lstofPTterms_4th)
-        self.write_csv_mathform('two_math.csv',lstofPTterms_3rd,lstofPTterms_4th)
+        self.write_csv('twomode_latex.csv',lstofPTterms_3rd,lstofPTterms_4th)
+        #self.write_csv_mathform('two_math.csv',lstofPTterms_3rd,lstofPTterms_4th)
 
     def onemodewvfn(self):
         #the one mode exicted wave function thermal average means two things:
@@ -179,8 +179,8 @@ class ThermalAvg:
                 diff4th1mode.append(self.diff4th_origin[i])
         #generalized function for the step 2-8
         lstofPTterms_4th = self.step2_8(unnecesry,diff4th1mode,fc4th1mode)
-        #self.write_csv('onemode.csv',lstofPTterms_3rd,lstofPTterms_4th)
-        self.write_csv_mathform('one_math.csv',lstofPTterms_3rd,lstofPTterms_4th)
+        self.write_csv('onemode_latex.csv',lstofPTterms_3rd,lstofPTterms_4th)
+        #self.write_csv_mathform('one_math_updateprefactor.csv',lstofPTterms_3rd,lstofPTterms_4th)
 
 
     def step2_8(self,unnecesry,diffiptlst,fciptlst):

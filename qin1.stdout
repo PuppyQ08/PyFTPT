@@ -1,0 +1,264 @@
+reverse diff merging running
+reverse diff merging running
+reverse diff merging running
+reverse diff merging running
+++++++++++++++++++++++++++++++
+The diff is  (1, 2, 0)   [D1, D2, D0]
+each of corresponding terms
+The fc is (1, 2, 0, 1, 2, 0)   [Qi, Qj**2, 1, Qi, Qj**2, 1]
+The final expression is -(fi + fj**2 + 2*fj*(fi + 1) + 1)/(2*(wi + 2*wj))
+++++++++++++++++++++++++++++++
+The diff is  (1, -2, 0)   [D1, D2n, D0]
+each of corresponding terms
+The fc is (1, 2, 0, 1, 2, 0)   [Qi, Qj**2, 1, Qi, Qj**2, 1]
+The final expression is (2*fi*fj + fi - fj**2)/(2*(wi - 2*wj))
+++++++++++++++++++++++++++++++
+The diff is  (2, 1, 0)   [D2, D1, D0]
+each of corresponding terms
+The fc is (2, 1, 0, 2, 1, 0)   [Qi**2, Qj, 1, Qi**2, Qj, 1]
+The final expression is -(fi**2 + 2*fi*(fj + 1) + fj + 1)/(2*(2*wi + wj))
+++++++++++++++++++++++++++++++
+The diff is  (2, -1, 0)   [D2, D1n, D0]
+each of corresponding terms
+The fc is (2, 1, 0, 2, 1, 0)   [Qi**2, Qj, 1, Qi**2, Qj, 1]
+The final expression is (fi**2 - 2*fi*fj - fj)/(2*(2*wi - wj))
+same diff merging running
+same diff merging running
+same diff merging running
+same diff merging running
+same diff merging running
+same diff merging running
+same diff merging running
+same diff merging running
+same diff merging running
+same diff merging running
+same diff merging running
+same diff merging running
+reverse diff merging running
+reverse diff merging running
+reverse diff merging running
+reverse diff merging running
+reverse diff merging running
+reverse diff merging running
+reverse diff merging running
+reverse diff merging running
+++++++++++++++++++++++++++++++
+The diff is  (1, 1, 0, 0)   [D1, D1, D0, D0]
+each of corresponding terms
+The fc is (1, 1, 0, 2, 1, 1, 0, 2)   [Qi, Qj, 1, Ql**2, Qi, Qj, 1, Ql**2]
+The final expression is -(fi + fj + 8*fl*(fi*fl + fi + fj*fl + fj + fl + 1) + 1)/(16*(wi + wj))
+The fc is (1, 1, 0, 2, 1, 1, 2, 0)   [Qi, Qj, 1, Ql**2, Qi, Qj, Qk**2, 1]
+The final expression is -(2*fi*fk + 2*fi*fl + fi + 2*fj*fk + 2*fj*fl + fj + 4*fk*fl*(fi + fj + 1) + 2*fk + 2*fl + 1)/(16*(wi + wj))
+The fc is (1, 1, 0, 2, 1, 3, 0, 0)   [Qi, Qj, 1, Ql**2, Qi, Qj**3, 1, 1]
+The final expression is -(2*fi*fj + 2*fi*fl + fi + 2*fj**2 + 4*fj*fl*(fi + fj) + 6*fj*fl + 3*fj + 2*fl + 1)/(8*(wi + wj))
+The fc is (1, 1, 0, 2, 3, 1, 0, 0)   [Qi, Qj, 1, Ql**2, Qi**3, Qj, 1, 1]
+The final expression is -(2*fi**2 + 2*fi*fj + 4*fi*fl*(fi + fj) + 6*fi*fl + 3*fi + 2*fj*fl + fj + 2*fl + 1)/(8*(wi + wj))
+The fc is (1, 1, 2, 0, 1, 1, 2, 0)   [Qi, Qj, Qk**2, 1, Qi, Qj, Qk**2, 1]
+The final expression is -(fi + fj + 8*fk*(fi*fk + fi + fj*fk + fj + fk + 1) + 1)/(16*(wi + wj))
+The fc is (1, 1, 2, 0, 1, 3, 0, 0)   [Qi, Qj, Qk**2, 1, Qi, Qj**3, 1, 1]
+The final expression is -(2*fi*fj + 2*fi*fk + fi + 2*fj**2 + 4*fj*fk*(fi + fj) + 6*fj*fk + 3*fj + 2*fk + 1)/(8*(wi + wj))
+The fc is (1, 1, 2, 0, 3, 1, 0, 0)   [Qi, Qj, Qk**2, 1, Qi**3, Qj, 1, 1]
+The final expression is -(2*fi**2 + 2*fi*fj + 4*fi*fk*(fi + fj) + 6*fi*fk + 3*fi + 2*fj*fk + fj + 2*fk + 1)/(8*(wi + wj))
+The fc is (1, 3, 0, 0, 1, 3, 0, 0)   [Qi, Qj**3, 1, 1, Qi, Qj**3, 1, 1]
+The final expression is -(fi + 12*fj**2 + 6*fj*(fi*fj + fi + fj**2) + 7*fj + 1)/(4*(wi + wj))
+The fc is (1, 3, 0, 0, 3, 1, 0, 0)   [Qi, Qj**3, 1, 1, Qi**3, Qj, 1, 1]
+The final expression is -(2*fi**2 + 4*fi*fj*(fi + fj + 2) + 3*fi + 2*fj**2 + 3*fj + 1)/(4*(wi + wj))
+The fc is (3, 1, 0, 0, 3, 1, 0, 0)   [Qi**3, Qj, 1, 1, Qi**3, Qj, 1, 1]
+The final expression is -(12*fi**2 + 6*fi*(fi**2 + fi*fj + fj) + 7*fi + fj + 1)/(4*(wi + wj))
+++++++++++++++++++++++++++++++
+The diff is  (1, 3, 0, 0)   [D1, D3, D0, D0]
+each of corresponding terms
+The fc is (1, 3, 0, 0, 1, 3, 0, 0)   [Qi, Qj**3, 1, 1, Qi, Qj**3, 1, 1]
+The final expression is -(fi + fj**3 + 3*fj*(fi*fj + fi + fj + 1) + 1)/(6*(wi + 3*wj))
+++++++++++++++++++++++++++++++
+The diff is  (1, -3, 0, 0)   [D1, D3n, D0, D0]
+each of corresponding terms
+The fc is (1, 3, 0, 0, 1, 3, 0, 0)   [Qi, Qj**3, 1, 1, Qi, Qj**3, 1, 1]
+The final expression is (3*fi*fj*(fj + 1) + fi - fj**3)/(6*(wi - 3*wj))
+++++++++++++++++++++++++++++++
+The diff is  (1, -1, 0, 0)   [D1, D1n, D0, D0]
+each of corresponding terms
+The fc is (1, 1, 0, 2, 1, 1, 0, 2)   [Qi, Qj, 1, Ql**2, Qi, Qj, 1, Ql**2]
+The final expression is (fi - fj + 8*fl*(fi*fl + fi - fj*fl - fj))/(16*(wi - wj))
+The fc is (1, 1, 0, 2, 1, 1, 2, 0)   [Qi, Qj, 1, Ql**2, Qi, Qj, Qk**2, 1]
+The final expression is (2*fi*fk + 2*fi*fl + fi - 2*fj*fk - 2*fj*fl - fj + 4*fk*fl*(fi - fj))/(16*(wi - wj))
+The fc is (1, 1, 0, 2, 1, 3, 0, 0)   [Qi, Qj, 1, Ql**2, Qi, Qj**3, 1, 1]
+The final expression is (2*fi*fj + 2*fi*fl + fi - 2*fj**2 + 4*fj*fl*(fi - fj) - 2*fj*fl - fj)/(8*(wi - wj))
+The fc is (1, 1, 0, 2, 3, 1, 0, 0)   [Qi, Qj, 1, Ql**2, Qi**3, Qj, 1, 1]
+The final expression is (2*fi**2 - 2*fi*fj + 4*fi*fl*(fi - fj) + 2*fi*fl + fi - 2*fj*fl - fj)/(8*(wi - wj))
+The fc is (1, 1, 2, 0, 1, 1, 2, 0)   [Qi, Qj, Qk**2, 1, Qi, Qj, Qk**2, 1]
+The final expression is (fi - fj + 8*fk*(fi*fk + fi - fj*fk - fj))/(16*(wi - wj))
+The fc is (1, 1, 2, 0, 1, 3, 0, 0)   [Qi, Qj, Qk**2, 1, Qi, Qj**3, 1, 1]
+The final expression is (2*fi*fj + 2*fi*fk + fi - 2*fj**2 + 4*fj*fk*(fi - fj) - 2*fj*fk - fj)/(8*(wi - wj))
+The fc is (1, 1, 2, 0, 3, 1, 0, 0)   [Qi, Qj, Qk**2, 1, Qi**3, Qj, 1, 1]
+The final expression is (2*fi**2 - 2*fi*fj + 4*fi*fk*(fi - fj) + 2*fi*fk + fi - 2*fj*fk - fj)/(8*(wi - wj))
+The fc is (1, 3, 0, 0, 1, 3, 0, 0)   [Qi, Qj**3, 1, 1, Qi, Qj**3, 1, 1]
+The final expression is (fi + 6*fj*(fi*fj + fi - fj**2 - fj) - fj)/(4*(wi - wj))
+The fc is (1, 3, 0, 0, 3, 1, 0, 0)   [Qi, Qj**3, 1, 1, Qi**3, Qj, 1, 1]
+The final expression is (2*fi**2 + 4*fi*fj*(fi - fj) + fi - 2*fj**2 - fj)/(4*(wi - wj))
+The fc is (3, 1, 0, 0, 3, 1, 0, 0)   [Qi**3, Qj, 1, 1, Qi**3, Qj, 1, 1]
+The final expression is (6*fi*(fi**2 - fi*fj + fi - fj) + fi - fj)/(4*(wi - wj))
+++++++++++++++++++++++++++++++
+The diff is  (2, 2, 0, 0)   [D2, D2, D0, D0]
+each of corresponding terms
+The fc is (2, 2, 0, 0, 2, 2, 0, 0)   [Qi**2, Qj**2, 1, 1, Qi**2, Qj**2, 1, 1]
+The final expression is -(2*fi**2*fj + fi**2 + 2*fi*fj**2 + 4*fi*fj + 2*fi + fj**2 + 2*fj + 1)/(32*(wi + wj))
+++++++++++++++++++++++++++++++
+The diff is  (2, -2, 0, 0)   [D2, D2n, D0, D0]
+each of corresponding terms
+The fc is (2, 2, 0, 0, 2, 2, 0, 0)   [Qi**2, Qj**2, 1, 1, Qi**2, Qj**2, 1, 1]
+The final expression is (fi**2 + 2*fi*fj*(fi - fj) - fj**2)/(32*(wi - wj))
+++++++++++++++++++++++++++++++
+The diff is  (3, 1, 0, 0)   [D3, D1, D0, D0]
+each of corresponding terms
+The fc is (3, 1, 0, 0, 3, 1, 0, 0)   [Qi**3, Qj, 1, 1, Qi**3, Qj, 1, 1]
+The final expression is -(fi**3 + 3*fi*(fi*fj + fi + fj + 1) + fj + 1)/(6*(3*wi + wj))
+++++++++++++++++++++++++++++++
+The diff is  (3, -1, 0, 0)   [D3, D1n, D0, D0]
+each of corresponding terms
+The fc is (3, 1, 0, 0, 3, 1, 0, 0)   [Qi**3, Qj, 1, 1, Qi**3, Qj, 1, 1]
+The final expression is -(-fi**3 + 3*fi*fj*(fi + 1) + fj)/(6*(3*wi - wj))
+reverse diff merging running
+reverse diff merging running
+reverse diff merging running
+reverse diff merging running
+++++++++++++++++++++++++++++++
+The diff is  (1, 1, 1)   [D1, D1, D1]
+each of corresponding terms
+The fc is (1, 1, 1, 1, 1, 1)   [Qi, Qj, Qk, Qi, Qj, Qk]
+The final expression is -(fi*fj + fi*fk + fi + fj*fk + fj + fk + 1)/(36*(wi + wj + wk))
+++++++++++++++++++++++++++++++
+The diff is  (1, 1, -1)   [D1, D1, D1n]
+each of corresponding terms
+The fc is (1, 1, 1, 1, 1, 1)   [Qi, Qj, Qk, Qi, Qj, Qk]
+The final expression is (fi*fj - fi*fk - fj*fk - fk)/(36*(wi + wj - wk))
+++++++++++++++++++++++++++++++
+The diff is  (1, -1, 1)   [D1, D1n, D1]
+each of corresponding terms
+The fc is (1, 1, 1, 1, 1, 1)   [Qi, Qj, Qk, Qi, Qj, Qk]
+The final expression is (-fi*fj + fi*fk - fj*fk - fj)/(36*(wi - wj + wk))
+++++++++++++++++++++++++++++++
+The diff is  (1, -1, -1)   [D1, D1n, D1n]
+each of corresponding terms
+The fc is (1, 1, 1, 1, 1, 1)   [Qi, Qj, Qk, Qi, Qj, Qk]
+The final expression is (fi*fj + fi*fk + fi - fj*fk)/(36*(wi - wj - wk))
+reverse diff merging running
+reverse diff merging running
+reverse diff merging running
+reverse diff merging running
+reverse diff merging running
+reverse diff merging running
+reverse diff merging running
+reverse diff merging running
+reverse diff merging running
+reverse diff merging running
+reverse diff merging running
+reverse diff merging running
+++++++++++++++++++++++++++++++
+The diff is  (1, 1, 2, 0)   [D1, D1, D2, D0]
+each of corresponding terms
+The fc is (1, 1, 2, 0, 1, 1, 2, 0)   [Qi, Qj, Qk**2, 1, Qi, Qj, Qk**2, 1]
+The final expression is -(fi*fj + fi*fk**2 + fi + fj*fk**2 + fj + fk**2 + 2*fk*(fi*fj + fi + fj + 1) + 1)/(8*(wi + wj + 2*wk))
+++++++++++++++++++++++++++++++
+The diff is  (1, 1, -2, 0)   [D1, D1, D2n, D0]
+each of corresponding terms
+The fc is (1, 1, 2, 0, 1, 1, 2, 0)   [Qi, Qj, Qk**2, 1, Qi, Qj, Qk**2, 1]
+The final expression is (2*fi*fj*fk + fi*fj - fi*fk**2 - fj*fk**2 - fk**2)/(8*(wi + wj - 2*wk))
+++++++++++++++++++++++++++++++
+The diff is  (1, 2, 1, 0)   [D1, D2, D1, D0]
+each of corresponding terms
+The fc is (1, 2, 1, 0, 1, 2, 1, 0)   [Qi, Qj**2, Qk, 1, Qi, Qj**2, Qk, 1]
+The final expression is -(fi*fj**2 + fi*fk + fi + fj**2*fk + fj**2 + 2*fj*(fi*fk + fi + fk + 1) + fk + 1)/(8*(wi + 2*wj + wk))
+++++++++++++++++++++++++++++++
+The diff is  (1, 2, -1, 0)   [D1, D2, D1n, D0]
+each of corresponding terms
+The fc is (1, 2, 1, 0, 1, 2, 1, 0)   [Qi, Qj**2, Qk, 1, Qi, Qj**2, Qk, 1]
+The final expression is -(-fi*fj**2 + fi*fk + fj**2*fk + 2*fj*fk*(fi + 1) + fk)/(8*(wi + 2*wj - wk))
+++++++++++++++++++++++++++++++
+The diff is  (1, -2, 1, 0)   [D1, D2n, D1, D0]
+each of corresponding terms
+The fc is (1, 2, 1, 0, 1, 2, 1, 0)   [Qi, Qj**2, Qk, 1, Qi, Qj**2, Qk, 1]
+The final expression is (-fi*fj**2 + 2*fi*fj*fk + fi*fk - fj**2*fk - fj**2)/(8*(wi - 2*wj + wk))
+++++++++++++++++++++++++++++++
+The diff is  (1, -2, -1, 0)   [D1, D2n, D1n, D0]
+each of corresponding terms
+The fc is (1, 2, 1, 0, 1, 2, 1, 0)   [Qi, Qj**2, Qk, 1, Qi, Qj**2, Qk, 1]
+The final expression is -(fi*fj**2 + 2*fi*fj*(fk + 1) + fi*fk + fi - fj**2*fk)/(8*(-wi + 2*wj + wk))
+++++++++++++++++++++++++++++++
+The diff is  (1, -1, 2, 0)   [D1, D1n, D2, D0]
+each of corresponding terms
+The fc is (1, 1, 2, 0, 1, 1, 2, 0)   [Qi, Qj, Qk**2, 1, Qi, Qj, Qk**2, 1]
+The final expression is -(fi*fj - fi*fk**2 + fj*fk**2 + 2*fj*fk*(fi + 1) + fj)/(8*(wi - wj + 2*wk))
+++++++++++++++++++++++++++++++
+The diff is  (1, -1, -2, 0)   [D1, D1n, D2n, D0]
+each of corresponding terms
+The fc is (1, 1, 2, 0, 1, 1, 2, 0)   [Qi, Qj, Qk**2, 1, Qi, Qj, Qk**2, 1]
+The final expression is -(fi*fj + fi*fk**2 + 2*fi*fk*(fj + 1) + fi - fj*fk**2)/(8*(-wi + wj + 2*wk))
+++++++++++++++++++++++++++++++
+The diff is  (2, 1, 1, 0)   [D2, D1, D1, D0]
+each of corresponding terms
+The fc is (2, 1, 1, 0, 2, 1, 1, 0)   [Qi**2, Qj, Qk, 1, Qi**2, Qj, Qk, 1]
+The final expression is -(fi**2*fj + fi**2*fk + fi**2 + 2*fi*(fj*fk + fj + fk + 1) + fj*fk + fj + fk + 1)/(8*(2*wi + wj + wk))
+++++++++++++++++++++++++++++++
+The diff is  (2, 1, -1, 0)   [D2, D1, D1n, D0]
+each of corresponding terms
+The fc is (2, 1, 1, 0, 2, 1, 1, 0)   [Qi**2, Qj, Qk, 1, Qi**2, Qj, Qk, 1]
+The final expression is -(-fi**2*fj + fi**2*fk + 2*fi*fk*(fj + 1) + fj*fk + fk)/(8*(2*wi + wj - wk))
+++++++++++++++++++++++++++++++
+The diff is  (2, -1, 1, 0)   [D2, D1n, D1, D0]
+each of corresponding terms
+The fc is (2, 1, 1, 0, 2, 1, 1, 0)   [Qi**2, Qj, Qk, 1, Qi**2, Qj, Qk, 1]
+The final expression is -(fi**2*fj - fi**2*fk + 2*fi*fj*(fk + 1) + fj*fk + fj)/(8*(2*wi - wj + wk))
+++++++++++++++++++++++++++++++
+The diff is  (2, -1, -1, 0)   [D2, D1n, D1n, D0]
+each of corresponding terms
+The fc is (2, 1, 1, 0, 2, 1, 1, 0)   [Qi**2, Qj, Qk, 1, Qi**2, Qj, Qk, 1]
+The final expression is (fi**2*fj + fi**2*fk + fi**2 - 2*fi*fj*fk - fj*fk)/(8*(2*wi - wj - wk))
+reverse diff merging running
+reverse diff merging running
+reverse diff merging running
+reverse diff merging running
+reverse diff merging running
+reverse diff merging running
+reverse diff merging running
+reverse diff merging running
+++++++++++++++++++++++++++++++
+The diff is  (1, 1, 1, 1)   [D1, D1, D1, D1]
+each of corresponding terms
+The fc is (1, 1, 1, 1, 1, 1, 1, 1)   [Qi, Qj, Qk, Ql, Qi, Qj, Qk, Ql]
+The final expression is -(fi*fj*fk + fi*fj*fl + fi*fj + fi*fk*fl + fi*fk + fi*fl + fi + fj*fk*fl + fj*fk + fj*fl + fj + fk*fl + fk + fl + 1)/(576*(wi + wj + wk + wl))
+++++++++++++++++++++++++++++++
+The diff is  (1, 1, 1, -1)   [D1, D1, D1, D1n]
+each of corresponding terms
+The fc is (1, 1, 1, 1, 1, 1, 1, 1)   [Qi, Qj, Qk, Ql, Qi, Qj, Qk, Ql]
+The final expression is (fi*fj*fk - fi*fj*fl - fi*fk*fl - fi*fl - fj*fk*fl - fj*fl - fk*fl - fl)/(576*(wi + wj + wk - wl))
+++++++++++++++++++++++++++++++
+The diff is  (1, 1, -1, 1)   [D1, D1, D1n, D1]
+each of corresponding terms
+The fc is (1, 1, 1, 1, 1, 1, 1, 1)   [Qi, Qj, Qk, Ql, Qi, Qj, Qk, Ql]
+The final expression is (-fi*fj*fk + fi*fj*fl - fi*fk*fl - fi*fk - fj*fk*fl - fj*fk - fk*fl - fk)/(576*(wi + wj - wk + wl))
+++++++++++++++++++++++++++++++
+The diff is  (1, 1, -1, -1)   [D1, D1, D1n, D1n]
+each of corresponding terms
+The fc is (1, 1, 1, 1, 1, 1, 1, 1)   [Qi, Qj, Qk, Ql, Qi, Qj, Qk, Ql]
+The final expression is (fi*fj*fk + fi*fj*fl + fi*fj - fi*fk*fl - fj*fk*fl - fk*fl)/(576*(wi + wj - wk - wl))
+++++++++++++++++++++++++++++++
+The diff is  (1, -1, 1, 1)   [D1, D1n, D1, D1]
+each of corresponding terms
+The fc is (1, 1, 1, 1, 1, 1, 1, 1)   [Qi, Qj, Qk, Ql, Qi, Qj, Qk, Ql]
+The final expression is (-fi*fj*fk - fi*fj*fl - fi*fj + fi*fk*fl - fj*fk*fl - fj*fk - fj*fl - fj)/(576*(wi - wj + wk + wl))
+++++++++++++++++++++++++++++++
+The diff is  (1, -1, 1, -1)   [D1, D1n, D1, D1n]
+each of corresponding terms
+The fc is (1, 1, 1, 1, 1, 1, 1, 1)   [Qi, Qj, Qk, Ql, Qi, Qj, Qk, Ql]
+The final expression is (fi*fj*fk - fi*fj*fl + fi*fk*fl + fi*fk - fj*fk*fl - fj*fl)/(576*(wi - wj + wk - wl))
+++++++++++++++++++++++++++++++
+The diff is  (1, -1, -1, 1)   [D1, D1n, D1n, D1]
+each of corresponding terms
+The fc is (1, 1, 1, 1, 1, 1, 1, 1)   [Qi, Qj, Qk, Ql, Qi, Qj, Qk, Ql]
+The final expression is (-fi*fj*fk + fi*fj*fl + fi*fk*fl + fi*fl - fj*fk*fl - fj*fk)/(576*(wi - wj - wk + wl))
+++++++++++++++++++++++++++++++
+The diff is  (1, -1, -1, -1)   [D1, D1n, D1n, D1n]
+each of corresponding terms
+The fc is (1, 1, 1, 1, 1, 1, 1, 1)   [Qi, Qj, Qk, Ql, Qi, Qj, Qk, Ql]
+The final expression is (fi*fj*fk + fi*fj*fl + fi*fj + fi*fk*fl + fi*fk + fi*fl + fi - fj*fk*fl)/(576*(wi - wj - wk - wl))

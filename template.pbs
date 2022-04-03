@@ -1,0 +1,10 @@
+#!/bin/bash
+#$ -S /bin/bash     # use bash shell
+#$ -q all.q         # Queue jobs
+#$ -pe orte 16      # parallel environment: use 32 cores (16 per node)
+#$ -cwd             # execute from current working directory
+#$ -e qin1.stderr       # stderr file
+#$ -o qin1.stdout       # stdout file
+#$ -N qin1    # name of job
+
+python FTPTeval.py

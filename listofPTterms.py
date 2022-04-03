@@ -72,7 +72,7 @@ class ListofPTterms:
         prefret = 1
         thirdchart = [0,sym.Rational(1,6),sym.Rational(1,2),sym.Rational(1,6)]
         forthchart = [sym.Rational(1,8),sym.Rational(1,24),sym.Rational(1,4),sym.Rational(1,6),sym.Rational(1,24)]
-        if(len(fcipt==6)):
+        if(len(fcipt)==6):
             product = 1
             for i in range(3):
                if(fcipt[i]!=0):
@@ -83,7 +83,7 @@ class ListofPTterms:
                if(fcipt[i]!=0):
                    product*=fcipt[i]
             prefret *= thirdchart[product]
-        if(len(fcipt==8)):
+        if(len(fcipt)==8):
             product = 1
             count=0
             for i in range(4):
