@@ -49,10 +49,10 @@ class ThermalAvg:
         self.thermAverules = self.thermAvgeval()#return a list of dict
         self.BornHuangrules = self.BHruleeval()#return a list of dict
         #start with one mode excited wave function
-        #self.onemodewvfn()
-        self.twomodewvfn()
-        self.threemodewvfn()
-        self.fourmodewvfn()
+        self.onemodewvfn()
+        #self.twomodewvfn()
+        #self.threemodewvfn()
+        #self.fourmodewvfn()
 
         #this is the test running for draft
         #temp = self.BornHuangrules[D1*Qi**1]

@@ -15,7 +15,7 @@ class Numerical:
 
         Ehbykb = 3.1577464*100000
         #Temprt = np.array([100,1000,10000,100000,1000000,10000000,100000000])
-        Temprt = 1000/Ehbykb
+        Temprt = 10000/Ehbykb
         w,FCQ3,FCQ4 = self.readSindoPES("./data/prop_no_3.hs",nmode)
         beta = 1/(Temprt)
         f = np.zeros(w.shape)
@@ -135,10 +135,10 @@ class Numerical:
         result3rd = S01 +S07 +S02 +S08 +S03 +D01 +D09 +T01 +T05 +T02 +T06 
         result4th = S04 +S09 +S05 +S10 +S06 +D02 +D07 +D03 +D15 +D05 +D11 +D12 +D10 +D08 +D04 +D16 +D13 +D14 +D06 +T03 +T07 +T04 +T08 +Q01 +Q02 +Q03 +Q04 +Q05 +Q06 +Q07 +Q08
         print("FTPT")
-        #print("3rd....")
-        #print(result3rd)
+        print("3rd....")
+        print(result3rd)
         print("4th....")
-        #print(result4th)
+        print(result4th)
         #print(D12+D11)
         #print(D15+D16)
         #print(D03+D04)
@@ -181,7 +181,7 @@ class Numerical:
         count= 0
         for i in range(nmode):
             for j in range(nmode):
-                #A1 += FCQ4[i,i,j,j]*(2*f[i]+1)*(2*f[j]+1)/8
+                A1 += FCQ4[i,i,j,j]*(2*f[i]+1)*(2*f[j]+1)/8
                 for k in range(nmode):
                     GP6t1 = [i,i,j,j]
                     GP6t2 = [i,i,k,k]
@@ -200,8 +200,8 @@ class Numerical:
                     if ((len(set(GP5t1))==2 and len(set(GP5t2))==2) and j==k):
                         GP5 += - FCQ4[i,i,j,j]*FCQ4[i,i,k,k]*(2*f[j]+1)*(2*f[k]+1)*(f[i]+1/2)/w[i]/8
                     B2D += -FCQ4[i,i,j,j]*FCQ4[i,i,k,k]*(2*f[j]+1)*(2*f[k]+1)*(f[i]+1/2)/w[i]/8
-                    #A2 += -FCQ3[i,j,j]*FCQ3[i,k,k]*(2*f[j]+1)*(2*f[k]+1)/w[i]/4     
-                    #C2 += -FCQ3[i,j,k]**2*((f[i]*f[j]+f[j]*f[k]+f[i]*f[k]+f[i]+f[j]+f[k]+1)/(w[i]+w[j]+w[k])-(f[i]*f[j]+f[j]*f[k]-f[i]*f[k]+f[j])/(w[j]-w[i]-w[k])-(f[i]*f[j]-f[k]*f[j]-f[i]*f[k]-f[k])/(w[j]+w[i]-w[k])-(f[k]*f[j]-f[i]*f[j]-f[i]*f[k]-f[i])/(w[j]-w[i]+w[k]))/6
+                    A2 += -FCQ3[i,j,j]*FCQ3[i,k,k]*(2*f[j]+1)*(2*f[k]+1)/w[i]/4     
+                    C2 += -FCQ3[i,j,k]**2*((f[i]*f[j]+f[j]*f[k]+f[i]*f[k]+f[i]+f[j]+f[k]+1)/(w[i]+w[j]+w[k])-(f[i]*f[j]+f[j]*f[k]-f[i]*f[k]+f[j])/(w[j]-w[i]-w[k])-(f[i]*f[j]-f[k]*f[j]-f[i]*f[k]-f[k])/(w[j]+w[i]-w[k])-(f[k]*f[j]-f[i]*f[j]-f[i]*f[k]-f[i])/(w[j]-w[i]+w[k]))/6
                     for l in range(nmode):
                         if(i!=j):
                             GP3t1 = [i,j,k,k]
@@ -289,14 +289,14 @@ class Numerical:
         GFresult4th = B2N +B2D +D1 +D2 +D3 +D4 +D5 +D6 +D7 +D8 
         print("GF")
         #print("3rd....")
-        #print(GFresult3rd)
+        print(GFresult3rd)
         print("4th....")
-        #print(GFresult4th)
+        print(GFresult4th)
         #print(B2D+ 3*(D1 +D2 +D3 +D6 +D7 +D8)+3*(D4 +D5) )#2.13 2.14 1.04
         #print(6*(D4+D5)) 2.13 2.14This six I am not sure. If there are no other bugs then should be this one 
         #print(B2D+3*(D3+D8+D1+D6)) #1.04 
         #print(B2N + 6*(D2+D3+D7+D8)) #2.02 2.10
-        print(6*(D5+D6+D4+D1))# 3.03 04 07 08
+        #print(6*(D5+D6+D4+D1))# 3.03 04 07 08
         #print(4*(D1+D4)) #2.11 12
         #print(2*B2N + 4*(D2+D3+D5+D6+D7+D8))# 2.15 2.16
         #print(B2N*2) 2.03 2.04
