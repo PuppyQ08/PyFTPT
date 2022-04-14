@@ -5,6 +5,7 @@ import numpy as np
 sys.path.append(".")
 from listofPTterms import ListofPTterms
 import csv
+import argparse
 
 Ii = sym.symbols('Ii')
 Ij = sym.symbols('Ij')
@@ -33,7 +34,9 @@ D3n = sym.symbols('D3n')
 D4n = sym.symbols('D4n')
 
 class ThermalAvg:
-    def __init__(self):
+    def __init__(self,iptfile,optfile):
+        #parse the input file:
+        
         #operator combinations 
         self.fc3rd_origin,self.fc4th_origin = self.fcoperator()
         #difference combinations
@@ -421,4 +424,8 @@ class ThermalAvg:
 
 
 
-test = ThermalAvg()
+parser = argparse.ArgumentParser()
+parser.add_argument("i",type=str,help = "input filename")
+parser.add_argument("o",type=str,help = "output filename")
+args = parser.parse_args()
+test = ThermalAvg(args.i,args.o)

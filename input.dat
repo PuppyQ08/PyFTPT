@@ -1,0 +1,10 @@
+# comments: each job starts with @ 
+# (ZT zero temperature FT finite temperature) #
+# T third order F fourth order. 
+# S singly D doubly T triply Q quadruply excitation
+ 
+
+#example:
+
+@ FT T S
+
