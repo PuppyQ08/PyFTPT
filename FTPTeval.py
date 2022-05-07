@@ -36,6 +36,8 @@ D4n = sym.symbols('D4n')
 class ThermalAvg:
     def __init__(self,iptfile,optfile):
         #parse the input file:
+        parser = argparse.ArgumentParser()
+        parser.add_argument('open_file',type=argparse.FileType('r'))
         
         #operator combinations 
         self.fc3rd_origin,self.fc4th_origin = self.fcoperator()
