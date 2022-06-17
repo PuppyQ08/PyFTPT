@@ -20,10 +20,82 @@ class Numerical:
         w,FCQ3,FCQ4 = self.readSindoPES("./data/prop_no_3.hs",nmode)
         for ii in range(len(Temprt)):
             print("::::::::::::::")
-            ret12 = self.GFnumeric(w,Temprt[ii],FCQ3,FCQ4,nmode)
+            #ret12 = self.GFnumeric(w,Temprt[ii],FCQ3,FCQ4,nmode)
+            ret12 = self.SQnumeric(w,Temprt[ii],FCQ3,FCQ4,nmode)
             retOmg0 = self.Bose_EinsteinStat(Temprt[ii],w)
             print(retOmg0+ret12)
 
+
+    def SQnumeric(self,w,Temprt,FCQ3,FCQ4,nmode):
+        beta = 1/(Temprt)
+        f = np.zeros(w.shape)
+        for i in range(len(w)):
+            f[i] = 1/(math.exp(beta*w[i])-1)
+        #print("checking f",f)
+        #second order diagram:
+        Atest = 0
+        A1  = 0
+        A2  = 0
+        B2N = 0
+        B2D = 0
+        C2  = 0
+        D1  = 0
+        D2  = 0
+        D3  = 0
+        D4  = 0
+        D5  = 0
+        D6  = 0
+        D7  = 0
+        D8  = 0
+        D7degen= 0
+        D5degen= 0
+        D2degen= 0
+        count= 0
+        for i in range(nmode):
+            for j in range(nmode):
+                Atest+=FCQ4[i,i,j,j]/8
+                #print("test case")
+                #print(FCQ4[i,i,j,j])
+                #print(2*f[i]+1)
+                #print(2*f[j]+1)
+                #print((2*f[i]+1)*(2*f[j]+1))
+                #print("test case done")
+                A1 += FCQ4[i,i,j,j]*(2*f[i]+1)*(2*f[j]+1)/8
+                for k in range(nmode):
+                    B2D += -FCQ4[i,i,j,j]*FCQ4[i,i,k,k]*(2*f[j]+1)*(2*f[k]+1)*(f[i]+1/2)/w[i]/8 
+                    #B2D += -beta*FCQ4[i,i,j,j]*FCQ4[i,i,k,k]*(2*f[j]+1)*(2*f[k]+1)*(2*f[i]**2+2*f[i]+1)/2
+                    A2 += -FCQ3[i,j,j]*FCQ3[i,k,k]*(2*f[j]+1)*(2*f[k]+1)/w[i]/4     
+                    C2 += -FCQ3[i,j,k]**2*((f[i]*f[j]+f[j]*f[k]+f[i]*f[k]+f[i]+f[j]+f[k]+1)/(w[i]+w[j]+w[k])-(f[i]*f[j]+f[j]*f[k]-f[i]*f[k]+f[j])/(w[j]-w[i]-w[k])-(f[i]*f[j]-f[k]*f[j]-f[i]*f[k]-f[k])/(w[j]+w[i]-w[k])-(f[k]*f[j]-f[i]*f[j]-f[i]*f[k]-f[i])/(w[j]-w[i]+w[k]))/6
+                    for l in range(nmode):
+                        if(i!=j):
+                            #B2N+= -FCQ4[i,j,k,k]*FCQ4[i,j,l,l]*(2*f[k]+1)*(2*f[l]+1)*(w[i]*(2*f[j]+1) - w[j]*(2*f[i]+1))/(w[i]**2-w[j]**2)/8
+                            B2N +=  FCQ4[i,j,k,k]*FCQ4[i,j,l,l]*(2*f[k]+1)*(2*f[l]+1)*(- (f[i]+f[j]+1)/(w[i]+w[j]) + (f[j]-f[i])/(w[i]-w[j])/2)/8
+                        D4 += -FCQ4[i,j,k,l]**2*((f[k]+1)*(f[i]+1)*(f[l]+1)*(f[j]+1)-f[i]*f[j]*f[k]*f[l])/(w[i]+w[j]+w[k]+w[l])/24
+                        D3 += -FCQ4[i,j,k,l]**2*(f[l]*f[k]*(f[j]+f[i]+1)+f[l]*(f[i]+1)*(f[j]+1)-f[i]*f[j]*f[k])/(w[i]+w[j]+w[k]-w[l])/6
+                        #if (-w[i] + w[j] - w[k] + w[l]!= 0 ):
+                        #    D7 += -FCQ4[i,j,k,l]**2*(f[i]*f[k]*(f[j]+f[l]+1)-f[j]*f[l]*(f[i]+f[k]+1))/(-w[i]+w[j]-w[k]+w[l])/24
+                        #else:
+                        #    D7degen+=  beta*FCQ4[i,j,k,l]**2*(f[i]*f[k]*(f[j]+f[l]+1)-f[j]*f[l]*(f[i]+f[k]+1))/24/2
+
+                        #if (-w[i] + w[j] + w[k] - w[l]!= 0 ):
+                        #    D2 += -FCQ4[i,j,k,l]**2*(f[i]*f[l]*(f[k]+f[j]+1)-f[j]*f[k]*(f[i]+f[l]+1))/(-w[i]+w[j]+w[k]-w[l])/24
+                        #else:
+                        #    D2degen+= beta*FCQ4[i,j,k,l]**2*(f[i]*f[l]*(f[k]+f[j]+1)-f[j]*f[k]*(f[i]+f[l]+1))/24/2
+
+                        if (w[i] + w[j] - w[k] - w[l]!= 0 ):
+                            D5 += -FCQ4[i,j,k,l]**2*(f[k]*f[l]*(f[j]+f[i]+1)-f[i]*f[j]*(f[l]+f[k]+1))/(w[i]+w[j]-w[k]-w[l])/16
+                        else:
+                            #print(beta*FCQ4[i,j,k,l]**2*(f[k]*f[l]*(f[j]+f[i]+1)+f[i]*f[j]*(f[l]+f[k]+1))/16/2)
+                            D5degen+= -beta*FCQ4[i,j,k,l]**2*(f[k]*f[l]*(f[j]+f[i]+1)-f[i]*f[j]*(f[l]+f[k]+1))/16/2 
+        GFresult3rd = A2 + C2 
+        GFresult4th = B2N +B2D +D1 +D2 +D3 +D4 +D5 +D6 +D7 +D8 + D5degen
+        ret= A1+GFresult4th+GFresult3rd
+        #print("degen is",D7degen+D5degen+D2degen)
+        print("first",A1)
+        #print(A1)
+        print("second",GFresult4th+GFresult3rd)
+        #print(GFresult4th+GFresult3rd+D7degen+D5degen+D2degen)
+        return ret
 
     def GFnumeric(self,w,Temprt,FCQ3,FCQ4,nmode):
         beta = 1/(Temprt)
@@ -63,7 +135,7 @@ class Numerical:
                 for k in range(nmode):
                     B2D += -FCQ4[i,i,j,j]*FCQ4[i,i,k,k]*(2*f[j]+1)*(2*f[k]+1)*(f[i]+1/2)/w[i]/8 
                     A2 += -FCQ3[i,j,j]*FCQ3[i,k,k]*(2*f[j]+1)*(2*f[k]+1)/w[i]/4     
-                    C2 += -FCQ3[i,j,k]**2*((f[i]*f[j]+f[j]*f[k]+f[i]*f[k]+f[i]+f[j]+f[k]+1)/(w[i]+w[j]+w[k])-(f[i]*f[j]+f[j]*f[k]-f[i]*f[k]+f[j])/(w[j]-w[i]-w[k])-(f[i]*f[j]-f[k]*f[j]-f[i]*f[k]-f[k])/(w[j]+w[i]-w[k])-(f[k]*f[j]-f[i]*f[j]-f[i]*f[k]-f[i])/(w[j]-w[i]+w[k]))/6
+                    C2 += -FCQ3[i,j,k]**2*((f[i]*f[j]+f[j]*f[k]+f[i]*f[k]+f[i]+f[j]+f[k]+1)/(w[i]+w[j]+w[k])-3*(f[i]*f[j]+f[j]*f[k]-f[i]*f[k]+f[j])/(w[j]-w[i]-w[k]))/6
                     for l in range(nmode):
                         if(i!=j):
                             B2N+= -FCQ4[i,j,k,k]*FCQ4[i,j,l,l]*(2*f[k]+1)*(2*f[l]+1)*(w[i]*(2*f[j]+1) - w[j]*(2*f[i]+1))/(w[i]**2-w[j]**2)/8
@@ -95,7 +167,6 @@ class Numerical:
         print("second",GFresult4th+GFresult3rd)
         #print(GFresult4th+GFresult3rd+D7degen+D5degen+D2degen)
         return ret
-
     def readSindoPES(self,filepath,nmode):
         w_omega = np.zeros(nmode)
         FCQ3 = np.zeros((nmode,nmode,nmode)) #Coefficient in Q (normal coordinates)
