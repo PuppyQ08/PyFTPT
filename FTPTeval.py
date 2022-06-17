@@ -304,7 +304,7 @@ class ThermalAvg:
         lst3rd = [0,1,2,3]
         iter3rdtemp = list(itertools.product(lst3rd,repeat=3))
         iter3rd = []
-        #filter out those with sum = 3
+        #pick those with sum = 3
         for i in range(len(iter3rdtemp)):
             if (sum(list(iter3rdtemp[i])) == 3):
                 iter3rd.append(iter3rdtemp[i])
@@ -312,7 +312,7 @@ class ThermalAvg:
         lst4th = [0,1,2,3,4]
         iter4thtemp = list(itertools.product(lst4th,repeat=4))
         iter4th = []
-        #filter out those with sum = 3
+        #pick those with sum = 4
         for i in range(len(iter4thtemp)):
             if (sum(list(iter4thtemp[i])) == 4):
                 iter4th.append(iter4thtemp[i])
