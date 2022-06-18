@@ -26,7 +26,7 @@ class generalorder:
         #Temprt = np.array([10000000])
         Temprt = 100
         Temprt = Temprt/Ehbykb
-        w_omega,FCQ3,FCQ4 = self.readSindoPES("./data/prop_no_3.hs",nmode)
+        w_omega,FCQ3,FCQ4,FCQ3scale,FCQ4scale = self.readSindoPES("./data/prop_no_3.hs",nmode)
         maxn = 4 
         maxorder = 5
         linrComb = self.loopfn(nmode,maxn)
@@ -36,7 +36,7 @@ class generalorder:
         #Omg1 = self.EN1(w_omega,maxn,Evlst,linrComb,Temprt,FCQ4,nmode)
         #print(Omg1)
         print("_________________________________________________________")
-        Omg1 = self.EN1_2(w_omega,maxn,Evlst,linrComb,Temprt,FCQ4,nmode)
+        Omg1 = self.EN1_2(w_omega,maxn,Evlst,linrComb,Temprt,FCQ4,nmode,FCQ4scale)
         print(Omg1)
             
         #print(len(linrComb))
@@ -70,6 +70,7 @@ class generalorder:
 
         #get omega first
     def EN1(self,w_omega,maxn,Evlst,linrComb,Temprt,FCQ4,nmode):
+
         beta = 1/(Temprt)
         #iterate through all Force constants
         FCQ3permute = np.zeros((nmode*nmode*nmode,nmode+1))
@@ -111,15 +112,40 @@ class generalorder:
             Xidenom += math.exp(-beta*E_N0sum)
         return Xinome/Xidenom
 
-    def EN1_2(self,w_omega,maxn,Evlst,linrComb,Temprt,FCQ4,nmode):
+    def EN1_2(self,w_omega,maxn,Evlst,linrComb,Temprt,FCQ4,nmode,FCQ4scale):
         beta = 1/(Temprt)
+        f = np.zeros(w_omega.shape)
+        for i in range(len(w_omega)):
+            f[i] = 1/(math.exp(beta*w_omega[i])-1)
+
+        A1 = 0.0
+        for i in range(nmode):
+            for j in range(nmode):
+                A1 += FCQ4scale[i,i,j,j]*(2*f[i]+1)*(2*f[j]+1)/8
+        print("infinite <EN1> is ",A1)
+        #test
+        A1 = 0.0
+        for i in range(nmode):
+            for j in range(nmode):
+                ninome = 0.0
+                nidenome = 0.0
+                for ni in range(10):
+                    ninome += (1+2*ni)*math.exp(-beta*ni*w_omega[i])
+                    nidenome += math.exp(-beta*ni*w_omega[i])
+                njnome = 0.0
+                njdenome = 0.0
+                for nj in range(10):
+                    njnome += (1+2*nj)*math.exp(-beta*nj*w_omega[j])
+                    njdenome += math.exp(-beta*nj*w_omega[j])
+                A1 += FCQ4scale[i,i,j,j]*(ninome/nidenome)*(njnome/njdenome)/8
+        print("16 analytical <EN1> is ",A1)
         Xidenom = 0.0
         Xinome = 0.0
         for i in range(len(linrComb)):
             E_N0sum = 0.0
             sumofoperator = 0.0
             for j in range(nmode):
-                E_N0sum += (linrComb[i][j]+0.5) * w_omega[j]
+                E_N0sum += (linrComb[i][j]) * w_omega[j]
             for ii in range(nmode):
                 for jj in range(nmode):
                     for kk in range(nmode):
@@ -133,9 +159,38 @@ class generalorder:
                                     multply*= Evlst[modeidx,numberofmodeinFC,n,0]
                             multply*=FCQ4[ii,jj,kk,ll]
                             sumofoperator+=multply/24
-            Xinome += sumofoperator#sumofoperator*math.exp(-beta*E_N0sum)
+            Xinome += sumofoperator*math.exp(-beta*E_N0sum)
             Xidenom += math.exp(-beta*E_N0sum)
         return Xinome/Xidenom
+
+    def EN2(self,w_omega,maxn,Evlst,linrComb,Temprt,FCQ3,FCQ4,nmode): 
+        #<N|V|M><M|V|N> M is not same as N
+        Xidenom = 0.0
+        Xinome = 0.0
+        for i in range(len(linrComb)):
+            for E0idx in range(nmode):
+                E_N0sum += linrComb[i][E0idx] * w_omega[E0idx]
+            E_Nsum =0.0
+            for j in range(len(linrComb)):
+                if(i==j): 
+                    continue
+                sumofoperator = 0.0
+                for ii in range(nmode):
+                    for jj in range(nmode):
+                        for kk in range(nmode):
+                            for ll in range(nmode):
+                                multply = 1
+                                eachcount = Counter([ii,jj,kk,ll])
+                                for modeidx in range(nmode):
+                                    n = linrComb[i][modeidx] 
+                                    numberofmodeinFC = eachcount[modeidx]
+                                    if (numberofmodeinFC != 0):
+                                        multply*= Evlst[modeidx,numberofmodeinFC,n,0]
+                                multply*=FCQ4[ii,jj,kk,ll]
+                                sumofoperator+=multply/24
+            Xinome += sumofoperator*math.exp(-beta*E_N0sum)
+            Xidenom += math.exp(-beta*E_N0sum)
+        
 
 
     def EvaluationList(self,nmode,w_omega,maxn,maxorder):
@@ -231,14 +286,16 @@ class generalorder:
         FCQ3 = np.true_divide(FCQ3,(1.88973**3*math.sqrt(1822.888486**3)))    
         FCQ4 = np.true_divide(FCQ4,(1.88973**4*math.sqrt(1822.888486**4)))    
         w_omega = np.true_divide(w_omega,math.sqrt(1.88973**2*1822.888486))    
+        FCQ3scale = np.copy(FCQ3)
+        FCQ4scale = np.copy(FCQ4)
         #XXX  : remember to scale the force constants 
         for i in range(nmode):
             for j in range(nmode):
                 for k in range(nmode):
-                    FCQ3[i,j,k]= FCQ3[i,j,k]/math.sqrt(2*w_omega[i])/math.sqrt(2*w_omega[j])/math.sqrt(2*w_omega[k])
+                    FCQ3scale[i,j,k]= FCQ3scale[i,j,k]/math.sqrt(2*w_omega[i])/math.sqrt(2*w_omega[j])/math.sqrt(2*w_omega[k])
                     for l in range(nmode):
-                        FCQ4[i,j,k,l]= FCQ4[i,j,k,l]/math.sqrt(2*w_omega[i])/math.sqrt(2*w_omega[j])/math.sqrt(2*w_omega[k])/math.sqrt(2*w_omega[l])
-        return w_omega,FCQ3,FCQ4
+                        FCQ4scale[i,j,k,l]= FCQ4scale[i,j,k,l]/math.sqrt(2*w_omega[i])/math.sqrt(2*w_omega[j])/math.sqrt(2*w_omega[k])/math.sqrt(2*w_omega[l])
+        return w_omega,FCQ3,FCQ4,FCQ3scale,FCQ4scale
 
     def Bose_EinsteinStat(self,Temprt,w_omega):
         b_beta= 1/Temprt
