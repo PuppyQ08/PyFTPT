@@ -27,7 +27,7 @@ class generalorder:
         Temprt = 100
         Temprt = Temprt/Ehbykb
         w_omega,FCQ3,FCQ4,FCQ3scale,FCQ4scale = self.readSindoPES("./data/prop_no_3.hs",nmode)
-        maxn = 4 
+        maxn = 16 
         maxorder = 5
         linrComb = self.loopfn(nmode,maxn)
         Evlst = self.EvaluationList(nmode,w_omega,maxn,maxorder)
@@ -36,8 +36,11 @@ class generalorder:
         #Omg1 = self.EN1(w_omega,maxn,Evlst,linrComb,Temprt,FCQ4,nmode)
         #print(Omg1)
         print("_________________________________________________________")
+        Omg2 = self.EN2(w_omega,maxn,Evlst,linrComb,Temprt,FCQ3,FCQ4,nmode,maxorder=5) 
+        print("general order 2 omega is ",Omg2)    
+        print("_________________________________________________________")
         Omg1 = self.EN1_2(w_omega,maxn,Evlst,linrComb,Temprt,FCQ4,nmode,FCQ4scale)
-        print(Omg1)
+        print("general order 1 omega is ",Omg1)
             
         #print(len(linrComb))
         #print(linrComb)
@@ -155,41 +158,72 @@ class generalorder:
                             for modeidx in range(nmode):
                                 n = linrComb[i][modeidx] 
                                 numberofmodeinFC = eachcount[modeidx]
-                                if (numberofmodeinFC != 0):
-                                    multply*= Evlst[modeidx,numberofmodeinFC,n,0]
+                                multply*= Evlst[modeidx,numberofmodeinFC,n,0]
                             multply*=FCQ4[ii,jj,kk,ll]
                             sumofoperator+=multply/24
             Xinome += sumofoperator*math.exp(-beta*E_N0sum)
             Xidenom += math.exp(-beta*E_N0sum)
         return Xinome/Xidenom
 
-    def EN2(self,w_omega,maxn,Evlst,linrComb,Temprt,FCQ3,FCQ4,nmode): 
+    def EN2(self,w_omega,maxn,Evlst,linrComb,Temprt,FCQ3,FCQ4,nmode,maxorder=5): 
+        #strategy for optimization:
+        #1. no need to parse FC index then parse each mode,we can parse each mode diff and let FC index goes from 0 to 4
+        #2. only store non-zero FC in a serial vector and store its index
+        #the key point of this algo is to enumerate the permutation
         #<N|V|M><M|V|N> M is not same as N
+        beta = 1/(Temprt)
         Xidenom = 0.0
         Xinome = 0.0
-        for i in range(len(linrComb)):
+        for i in range(len(linrComb)):#N, and E_N0sum is done here
+            sumofoperator = 0.0
+            E_N0sum=0.0
             for E0idx in range(nmode):
                 E_N0sum += linrComb[i][E0idx] * w_omega[E0idx]
-            E_Nsum =0.0
-            for j in range(len(linrComb)):
+            E_Nsum =0.0#sum for each N, needing sum of all M
+            for j in range(len(linrComb)):# M runs over N except for M=N
                 if(i==j): 
                     continue
-                sumofoperator = 0.0
+                Nhs = np.array(linrComb[i])
+                Mhs = np.array(linrComb[j])
+                n = np.maximum(Nhs,Mhs)
+                diff = np.abs(Nhs-Mhs)
+                vecQ3 = [] 
+                vecQ4 = []
                 for ii in range(nmode):
                     for jj in range(nmode):
                         for kk in range(nmode):
+                            multplyQ3 = 1
+                            eachcount3 = Counter([ii,jj,kk])
+                            for modeidx3 in range(nmode):
+                                if(diff[modeidx3]>=maxorder-1):
+                                    multplyQ3 = 0
+                                    break
+                                numberofmodeinFC = eachcount3[modeidx3]
+                                multplyQ3 *= Evlst[modeidx3,numberofmodeinFC,n[modeidx3],diff[modeidx3]]
+                            multplyQ3*=FCQ3[ii,jj,kk]/6
+                            if(multplyQ3!=0):
+                                vecQ3.append(multplyQ3)
                             for ll in range(nmode):
-                                multply = 1
+                                multplyQ4 = 1
                                 eachcount = Counter([ii,jj,kk,ll])
                                 for modeidx in range(nmode):
-                                    n = linrComb[i][modeidx] 
+                                    if(diff[modeidx]>=maxorder):
+                                        multplyQ4 = 0
+                                        break
                                     numberofmodeinFC = eachcount[modeidx]
-                                    if (numberofmodeinFC != 0):
-                                        multply*= Evlst[modeidx,numberofmodeinFC,n,0]
-                                multply*=FCQ4[ii,jj,kk,ll]
-                                sumofoperator+=multply/24
+                                    multplyQ4 *= Evlst[modeidx,numberofmodeinFC,n[modeidx],diff[modeidx]]
+                                if(multplyQ4!=0):
+                                    multplyQ4*=FCQ4[ii,jj,kk,ll]/24
+                                    vecQ4.append(multplyQ4)
+                for each1 in vecQ3:
+                    for each2 in vecQ3:
+                        sumofoperator+= each1*each2
+                for each1 in vecQ4:
+                    for each2 in vecQ4:
+                        sumofoperator+= each1*each2
             Xinome += sumofoperator*math.exp(-beta*E_N0sum)
             Xidenom += math.exp(-beta*E_N0sum)
+            return Xinome/Xidenom
         
 
 
