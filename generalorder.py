@@ -22,9 +22,9 @@ E_N^2 = <N|V|M><M|V|N> this one may be tricky since M needs to be the distinct r
 class generalorder:
     def __init__(self,nmode):
         Ehbykb = 3.1577464*100000
-        #Temprt = np.array([100,1000,10000,100000,1000000,10000000,100000000])
+        Temprt = np.array([100,10**2.5,1000,10**3.5,10000,100000,1000000,10000000,100000000])
         #Temprt = np.array([10000000])
-        Temprt = 100
+        #Temprt = 100
         Temprt = Temprt/Ehbykb
         w_omega,FCQ3,FCQ4,FCQ3scale,FCQ4scale = self.readSindoPES("./data/prop_no_3.hs",nmode)
         maxn = 16 
@@ -32,15 +32,16 @@ class generalorder:
         linrComb = self.loopfn(nmode,maxn)
         Evlst = self.EvaluationList(nmode,w_omega,maxn,maxorder)
         Omg0 = self.EN0(w_omega,maxn,Evlst,linrComb,Temprt)
-        print(Omg0)
+        print("_________________________________________________________")
+        print("general order 0 omega is",Omg0)
         #Omg1 = self.EN1(w_omega,maxn,Evlst,linrComb,Temprt,FCQ4,nmode)
         #print(Omg1)
         print("_________________________________________________________")
-        Omg2 = self.EN2(w_omega,maxn,Evlst,linrComb,Temprt,FCQ3,FCQ4,nmode,maxorder=5) 
-        print("general order 2 omega is ",Omg2)    
-        print("_________________________________________________________")
         Omg1 = self.EN1_2(w_omega,maxn,Evlst,linrComb,Temprt,FCQ4,nmode,FCQ4scale)
         print("general order 1 omega is ",Omg1)
+        print("_________________________________________________________")
+        Omg2 = self.EN2(w_omega,maxn,Evlst,linrComb,Temprt,FCQ3,FCQ4,nmode,maxorder=5) 
+        print("general order 2 omega is ",Omg2)    
             
         #print(len(linrComb))
         #print(linrComb)
@@ -62,13 +63,13 @@ class generalorder:
     #pass test
     def EN0(self,w_omega,maxn,Evlst,linrComb,Temprt):
         beta = 1/(Temprt)
-        Xisum = 0.0
+        Xisum =np.zeros(beta.shape) 
         for i in range(len(linrComb)):
             E_Nsum = 0.0
             for j in range(len(linrComb[i])):
                 E_Nsum += (linrComb[i][j]+0.5) * w_omega[j]
-            Xisum += math.exp(-beta*E_Nsum)
-        Omg = - math.log(Xisum)/beta
+            Xisum += np.exp(-beta*E_Nsum)
+        Omg = - np.log(Xisum)/beta
         return Omg
 
         #get omega first
@@ -117,33 +118,32 @@ class generalorder:
 
     def EN1_2(self,w_omega,maxn,Evlst,linrComb,Temprt,FCQ4,nmode,FCQ4scale):
         beta = 1/(Temprt)
-        f = np.zeros(w_omega.shape)
-        for i in range(len(w_omega)):
-            f[i] = 1/(math.exp(beta*w_omega[i])-1)
+        #f = np.zeros(w_omega.shape)
+        #f = 1/(np.exp(beta*w_omega[i])-1)
 
-        A1 = 0.0
-        for i in range(nmode):
-            for j in range(nmode):
-                A1 += FCQ4scale[i,i,j,j]*(2*f[i]+1)*(2*f[j]+1)/8
-        print("infinite <EN1> is ",A1)
+        #A1 = 0.0
+        #for i in range(nmode):
+        #    for j in range(nmode):
+        #        A1 += FCQ4scale[i,i,j,j]*(2*f[i]+1)*(2*f[j]+1)/8
+        #print("infinite <EN1> is ",A1)
         #test
-        A1 = 0.0
-        for i in range(nmode):
-            for j in range(nmode):
-                ninome = 0.0
-                nidenome = 0.0
-                for ni in range(10):
-                    ninome += (1+2*ni)*math.exp(-beta*ni*w_omega[i])
-                    nidenome += math.exp(-beta*ni*w_omega[i])
-                njnome = 0.0
-                njdenome = 0.0
-                for nj in range(10):
-                    njnome += (1+2*nj)*math.exp(-beta*nj*w_omega[j])
-                    njdenome += math.exp(-beta*nj*w_omega[j])
-                A1 += FCQ4scale[i,i,j,j]*(ninome/nidenome)*(njnome/njdenome)/8
-        print("16 analytical <EN1> is ",A1)
-        Xidenom = 0.0
-        Xinome = 0.0
+        #A1 = 0.0
+        #for i in range(nmode):
+        #    for j in range(nmode):
+        #        ninome = 0.0
+        #        nidenome = 0.0
+        #        for ni in range(10):
+        #            ninome += (1+2*ni)*math.exp(-beta*ni*w_omega[i])
+        #            nidenome += math.exp(-beta*ni*w_omega[i])
+        #        njnome = 0.0
+        #        njdenome = 0.0
+        #        for nj in range(10):
+        #            njnome += (1+2*nj)*math.exp(-beta*nj*w_omega[j])
+        #            njdenome += math.exp(-beta*nj*w_omega[j])
+        #        A1 += FCQ4scale[i,i,j,j]*(ninome/nidenome)*(njnome/njdenome)/8
+        #print("16 analytical <EN1> is ",A1)
+        Xidenom = np.zeros(beta.shape)
+        Xinome  = np.zeros(beta.shape)
         for i in range(len(linrComb)):
             E_N0sum = 0.0
             sumofoperator = 0.0
@@ -161,8 +161,8 @@ class generalorder:
                                 multply*= Evlst[modeidx,numberofmodeinFC,n,0]
                             multply*=FCQ4[ii,jj,kk,ll]
                             sumofoperator+=multply/24
-            Xinome += sumofoperator*math.exp(-beta*E_N0sum)
-            Xidenom += math.exp(-beta*E_N0sum)
+            Xinome += sumofoperator*np.exp(-beta*E_N0sum)
+            Xidenom += np.exp(-beta*E_N0sum)
         return Xinome/Xidenom
 
     def EN2(self,w_omega,maxn,Evlst,linrComb,Temprt,FCQ3,FCQ4,nmode,maxorder=5): 
@@ -172,20 +172,22 @@ class generalorder:
         #the key point of this algo is to enumerate the permutation
         #<N|V|M><M|V|N> M is not same as N
         beta = 1/(Temprt)
-        Xidenom = 0.0
-        Xinome = 0.0
+        Xidenom =np.zeros(beta.shape) 
+        Xinome =np.zeros(beta.shape) 
         for i in range(len(linrComb)):#N, and E_N0sum is done here
-            sumofoperator = 0.0
+            E_Nsum = 0.0
             E_N0sum=0.0
             for E0idx in range(nmode):
                 E_N0sum += linrComb[i][E0idx] * w_omega[E0idx]
-            E_Nsum =0.0#sum for each N, needing sum of all M
+            E_Nsum = 0.0#sum for each N, needing sum of all M
             for j in range(len(linrComb)):# M runs over N except for M=N
                 if(i==j): 
                     continue
+                sumofoperator = 0.0
                 Nhs = np.array(linrComb[i])
                 Mhs = np.array(linrComb[j])
                 n = np.maximum(Nhs,Mhs)
+                diffreal = np.sum((Nhs-Mhs)*w_omega)
                 diff = np.abs(Nhs-Mhs)
                 vecQ3 = [] 
                 vecQ4 = []
@@ -215,15 +217,14 @@ class generalorder:
                                 if(multplyQ4!=0):
                                     multplyQ4*=FCQ4[ii,jj,kk,ll]/24
                                     vecQ4.append(multplyQ4)
-                for each1 in vecQ3:
-                    for each2 in vecQ3:
-                        sumofoperator+= each1*each2
-                for each1 in vecQ4:
-                    for each2 in vecQ4:
-                        sumofoperator+= each1*each2
-            Xinome += sumofoperator*math.exp(-beta*E_N0sum)
-            Xidenom += math.exp(-beta*E_N0sum)
-            return Xinome/Xidenom
+                vectotal = np.concatenate((vecQ3,vecQ4))
+                #sumofoperator+= np.sum(np.outer(vecQ3,vecQ3))
+                sumofoperator+= np.sum(np.outer(vectotal,vectotal))
+                sumofoperator/=diffreal
+                E_Nsum+=sumofoperator
+            Xinome += E_Nsum*np.exp(-beta*E_N0sum)
+            Xidenom += np.exp(-beta*E_N0sum)
+        return Xinome/Xidenom
         
 
 
@@ -347,5 +348,6 @@ class generalorder:
             entropy_S += - math.log(1-math.exp(-b_beta*eachw)) + eachw*math.exp(-b_beta*eachw)/(Temprt*(1-math.exp(-b_beta*eachw)))
         print("total OMG",GP_Omg)
         return GP_Omg
-
+a= time.time()
 test = generalorder(3) 
+print((time.time()-a)/60)
