@@ -14,7 +14,7 @@ class Numerical:
     def __init__(self,nmode):
 
         Ehbykb = 3.1577464*100000
-        Temprt = np.array([100,1000,10000,100000,1000000,10000000,100000000])
+        Temprt = np.array([100,10**2.5,1000,10**3.5,10000,100000,1000000])#,10000000,100000000])
         #Temprt = np.array([10000000])
         Temprt = Temprt/Ehbykb
         w,FCQ3,FCQ4 = self.readSindoPES("./data/prop_no_3.hs",nmode)
@@ -23,7 +23,7 @@ class Numerical:
             #ret12 = self.GFnumeric(w,Temprt[ii],FCQ3,FCQ4,nmode)
             ret12 = self.SQnumeric(w,Temprt[ii],FCQ3,FCQ4,nmode)
             retOmg0 = self.Bose_EinsteinStat(Temprt[ii],w)
-            print(retOmg0+ret12)
+            #print(retOmg0+ret12)
 
 
     def SQnumeric(self,w,Temprt,FCQ3,FCQ4,nmode):
@@ -53,13 +53,6 @@ class Numerical:
         count= 0
         for i in range(nmode):
             for j in range(nmode):
-                Atest+=FCQ4[i,i,j,j]/8
-                #print("test case")
-                #print(FCQ4[i,i,j,j])
-                #print(2*f[i]+1)
-                #print(2*f[j]+1)
-                #print((2*f[i]+1)*(2*f[j]+1))
-                #print("test case done")
                 A1 += FCQ4[i,i,j,j]*(2*f[i]+1)*(2*f[j]+1)/8
                 for k in range(nmode):
                     B2D += -FCQ4[i,i,j,j]*FCQ4[i,i,k,k]*(2*f[j]+1)*(2*f[k]+1)*(f[i]+1/2)/w[i]/8 
@@ -88,7 +81,7 @@ class Numerical:
                             #print(beta*FCQ4[i,j,k,l]**2*(f[k]*f[l]*(f[j]+f[i]+1)+f[i]*f[j]*(f[l]+f[k]+1))/16/2)
                             D5degen+= -beta*FCQ4[i,j,k,l]**2*(f[k]*f[l]*(f[j]+f[i]+1)-f[i]*f[j]*(f[l]+f[k]+1))/16/2 
         GFresult3rd = A2 + C2 
-        GFresult4th = B2N +B2D +D1 +D2 +D3 +D4 +D5 +D6 +D7 +D8 + D5degen
+        GFresult4th = B2N +B2D +D3 +D4 +D5 + D5degen
         ret= A1+GFresult4th+GFresult3rd
         #print("degen is",D7degen+D5degen+D2degen)
         print("first",A1)
