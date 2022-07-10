@@ -40,7 +40,7 @@ class generalorder:
         Omg1 = self.EN1_2(w_omega,maxn,Evlst,linrComb,Temprt,FCQ4,nmode,FCQ4scale)
         print("general order 1 omega is ",Omg1)
         print("_________________________________________________________")
-        Omg2 = self.EN2(w_omega,maxn,Evlst,linrComb,Temprt,FCQ3,FCQ4,nmode,maxorder=5) 
+        Omg2 = self.EN2(w_omega,maxn,Evlst,linrComb,Temprt,FCQ3,FCQ4,nmode,maxorder) 
         print("general order 2 omega is ",Omg2)    
             
         #print(len(linrComb))
@@ -175,13 +175,30 @@ class generalorder:
         Xidenom =np.zeros(beta.shape) 
         Xinome =np.zeros(beta.shape) 
         for i in range(len(linrComb)):#N, and E_N0sum is done here
-            E_Nsum = 0.0
+            E_Nsum =np.zeros(beta.shape) 
             E_N0sum=0.0
             for E0idx in range(nmode):
                 E_N0sum += linrComb[i][E0idx] * w_omega[E0idx]
             E_Nsum = 0.0#sum for each N, needing sum of all M
             for j in range(len(linrComb)):# M runs over N except for M=N
+                sumofdegen= 0.0
                 if(i==j): 
+                    vecdegen =[]
+                    for ii in range(nmode):
+                        for jj in range(nmode):
+                            for kk in range(nmode):
+                                for ll in range(nmode):
+                                    multply = 1
+                                    eachcount = Counter([ii,jj,kk,ll])
+                                    for modeidx in range(nmode):
+                                        n = linrComb[i][modeidx] 
+                                        numberofmodeinFC = eachcount[modeidx]
+                                        multply*= Evlst[modeidx,numberofmodeinFC,n,0]
+                                    multply*=FCQ4[ii,jj,kk,ll]/24
+                                    if(multply!=0):
+                                        vecdegen.append(multply)
+                    vecdegen = np.array(vecdegen)
+                    sumofdegen+=np.sum(np.outer(vecdegen,vecdegen))
                     continue
                 sumofoperator = 0.0
                 Nhs = np.array(linrComb[i])
@@ -221,7 +238,7 @@ class generalorder:
                 #sumofoperator+= np.sum(np.outer(vecQ3,vecQ3))
                 sumofoperator+= np.sum(np.outer(vectotal,vectotal))
                 sumofoperator/=diffreal
-                E_Nsum+=sumofoperator
+                E_Nsum+=sumofoperator-sumofdegen*beta/2
             Xinome += E_Nsum*np.exp(-beta*E_N0sum)
             Xidenom += np.exp(-beta*E_N0sum)
         return Xinome/Xidenom

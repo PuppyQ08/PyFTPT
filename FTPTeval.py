@@ -5,6 +5,7 @@ import numpy as np
 sys.path.append(".")
 from listofPTterms import ListofPTterms
 import csv
+from collections import OrderedDict
 
 Ii = sym.symbols('Ii')
 Ij = sym.symbols('Ij')
@@ -49,10 +50,11 @@ class ThermalAvg:
         self.thermAverules = self.thermAvgeval()#return a list of dict
         self.BornHuangrules = self.BHruleeval()#return a list of dict
         #start with one mode excited wave function
-        self.onemodewvfn()
+        #self.onemodewvfn()
         #self.twomodewvfn()
         #self.threemodewvfn()
         #self.fourmodewvfn()
+        self.individualtest()
 
         #this is the test running for draft
         #temp = self.BornHuangrules[D1*Qi**1]
@@ -66,6 +68,26 @@ class ThermalAvg:
         
         #temp2 = temp2.replace('wi','\omega_i')
         #print(temp2)
+    def individualtest(self):
+        testni = sym.expand(self.BornHuangrules[D2n*Qi**2]*self.BornHuangrules[D2n*Qi**4])
+        testnj = sym.expand(self.BornHuangrules[D2n*Qi**4])
+        #XXX for the squared term like (2n+1)**2 you need to expand first then sub
+        #middle = sym.together(sym.expand(testni**2))
+        #print(sym.together(sym.expand(testni**2)))
+        #print(testt.subs(self.thermAverules))
+        #print(sym.together(self.subs(testni*testnj)))
+        #print(sym.together(self.subs(testni**2)))
+        print(sym.together(self.subs(testni)))
+        #testfi = sym.expand(sym.together(testni.subs(self.thermAverules)))
+        #print(testfi)
+
+    def subs(self,symipt):
+        ret = sym.expand(sym.together(symipt.subs(self.thermAverules[0])))
+        ret = sym.expand(sym.together(ret.subs(self.thermAverules[1])))
+        ret = sym.expand(sym.together(ret.subs(self.thermAverules[2])))
+        ret = sym.expand(sym.together(ret.subs(self.thermAverules[3])))
+        return ret
+
 
     def fourmodewvfn(self):
         #the four mode exicted wave function :
@@ -260,18 +282,23 @@ class ThermalAvg:
         return eachDxQm
 
     #rules for substituting Im with fm
-    def thermAvghelper(self,Qm,Im,fm):
-        tempdict = {Im**4:24*fm**4+36*fm**3+14*fm**2+fm,Im**3:fm*(6*fm**2+6*fm+1),Im**2:fm*(2*fm+1),Im:fm}
-        return tempdict
+    def thermAvghelper(self,lst,Im,fm):
+        nopt =4 #order of operator Qi**4 Qi**3 Qi**2 Qi**1
+        lst[0][Im**4]= 24*fm**4+36*fm**3+14*fm**2+fm
+        lst[1][Im**3] = 6*fm**3+6*fm**2+fm
+        lst[2][Im**2] = 2*fm**2 + fm
+        lst[3][Im] = fm
+        #tempdict = {Im**4:24*fm**4+36*fm**3+14*fm**2+fm,Im**3:fm*(6*fm**2+6*fm+1),Im**2:fm*(2*fm+1),Im:fm}
     
     def thermAvgeval(self):
         #Im -> fm
-        lstofthermalAvg ={} 
+        lst = [{},{},{},{}]
         for i in range(len(self.operatorlst)):
-            lstofthermalAvg.update(self.thermAvghelper(self.operatorlst[i],self.qtnumberlst[i],self.BEfactorlst[i]))
-        return lstofthermalAvg
+            self.thermAvghelper(lst,self.qtnumberlst[i],self.BEfactorlst[i])
+        return lst
 
     #rules for substituting Dx_Qm with Im and wm
+    #XXX warning: this is reverse version of paper's table: D1 = D1n in paper
     def BHrulehelper(self,Qm,Im,wm):
         tempdict = {D0*Qm:0,D0*Qm**2:(Im+sym.Rational(1,2))/wm,D0*Qm**3:0,D0*Qm**4:(6*Im*(Im+1)+3)/wm/wm*sym.Rational(1,4),
                     D1*Qm:sym.sqrt((Im+1)/wm*sym.Rational(1,2)),D1*Qm**2:0,D1*Qm**3:3*((Im+1)/wm*sym.Rational(1,2))**sym.Rational(3,2),D1*Qm**4:0,
@@ -417,7 +444,7 @@ class ThermalAvg:
                     outputlist.append(temp)
             wrtr.writerow(outputlist)
 
-
+        
 
 
 

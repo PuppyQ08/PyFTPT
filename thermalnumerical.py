@@ -79,7 +79,7 @@ class Numerical:
                             D5 += -FCQ4[i,j,k,l]**2*(f[k]*f[l]*(f[j]+f[i]+1)-f[i]*f[j]*(f[l]+f[k]+1))/(w[i]+w[j]-w[k]-w[l])/16
                         else:
                             #print(beta*FCQ4[i,j,k,l]**2*(f[k]*f[l]*(f[j]+f[i]+1)+f[i]*f[j]*(f[l]+f[k]+1))/16/2)
-                            D5degen+= -beta*FCQ4[i,j,k,l]**2*(f[k]*f[l]*(f[j]+f[i]+1)-f[i]*f[j]*(f[l]+f[k]+1))/16/2 
+                            D5degen+= -beta*FCQ4[i,j,k,l]**2*(f[k]*f[l]*(f[j]+1)*(f[i]+1)+f[i]*f[j]*(f[l]+1)*(f[k]+1))/16/2 
         GFresult3rd = A2 + C2 
         GFresult4th = B2N +B2D +D3 +D4 +D5 + D5degen
         ret= A1+GFresult4th+GFresult3rd

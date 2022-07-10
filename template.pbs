@@ -3,8 +3,8 @@
 #$ -q all.q         # Queue jobs
 #$ -pe orte 16      # parallel environment: use 32 cores (16 per node)
 #$ -cwd             # execute from current working directory
-#$ -e generder_16.stderr       # stderr file
-#$ -o generder_16.stdout       # stdout file
-#$ -N generder_16    # name of job
+#$ -e generder_16_degen.stderr       # stderr file
+#$ -o generder_16_degen.stdout       # stdout file
+#$ -N generder_16_degen    # name of job
 
 python generalorder.py
