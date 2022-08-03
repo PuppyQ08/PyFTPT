@@ -13,12 +13,18 @@ from itertools import permutations
 '''
 General order algorithm, based on the HCPT and recursion for E_N^n and Omega.
 we define three type of matrices:
-    a_MN^(n-1) : < M | Psi_N^(n-1) > not Hermitian. a_NN^(n) = \delta_n0. initial case: a_MN^(0) = \delta_MN
-        it is formulated as a[M,N,n]. 
-    V_NM : Part of FCI matrix, < N | V | M > Hermitian.
-        it is formulated as V[N,M] squared matrix
-    E_N : it is diagonal matrix. 
-    deltaE_NM : 1/(E_M - E_N)
+    - a_MN^(n-1) : < M | Psi_N^(n-1) > not Hermitian. a_NN^(n) = \delta_n0. initial case: a_MN^(0) = \delta_MN
+        it is formulated as a[n,M,N]. 
+    -* V_NM : Part of FCI matrix, < N | V | M > Hermitian.
+        it is formulated as V[N,M] squared matrix, can be stored in file and reuse.
+    -* deltaE_NM : 1/(E_M - E_N) not Hermitian,
+        it is formulated as DE_NM[N,M] squared matrix, can be stored in file and reuse
+    - E_N^(n) : it is diagonal matrix. 
+        E_N[n,N,N]
+    - E0: diagonal matrix of Exp(-beta*E0) Used for thermal average E_N^(n).
+        E0[T,N,N]
+
+    all matrices have N*N (N=len(linrComb)) 
 '''
 class generalorder:
     def __init__(self,nmode):
@@ -28,7 +34,7 @@ class generalorder:
         #Temprt = 100
         Temprt = Temprt/Ehbykb
         w_omega,FCQ3,FCQ4,FCQ3scale,FCQ4scale = self.readSindoPES("./data/prop_no_3.hs",nmode)
-        maxn = 16 
+        maxn = 4 
         maxorder = 5
         linrComb = self.loopfn(nmode,maxn)
         Evlst = self.EvaluationList(nmode,w_omega,maxn,maxorder)
@@ -36,6 +42,7 @@ class generalorder:
         print("_________________________________________________________")
         print("general order 0 omega is",Omg0)
 
+        self.V_EN_matrix_build(w_omega,maxn,Evlst,linrComb,FCQ3,FCQ4,nmode,maxorder)
         #Omg1 = self.EN1(w_omega,maxn,Evlst,linrComb,Temprt,FCQ4,nmode)
         #print(Omg1)
         #print("_________________________________________________________")
@@ -47,6 +54,58 @@ class generalorder:
             
         #print(len(linrComb))
         #print(linrComb)
+
+    def V_EN_matrix_build(self,w_omega,maxn,Evlst,linrComb,FCQ3,FCQ4,nmode,maxorder):
+        V_NM = np.zeros((len(linrComb),len(linrComb)))
+        DE_MN = np.zeros(V_NM.shape)
+        for i in range(len(linrComb)):#N, and E_N0sum is done here
+            #E_Nsum =np.zeros(beta.shape) 
+            #E_N0sum=0.0
+            #for E0idx in range(nmode):
+            #    E_N0sum += linrComb[i][E0idx] * w_omega[E0idx]
+            #E_Nsum = 0.0#sum for each N, needing sum of all M
+            #delta E
+            Nhs = np.array(linrComb[i])
+            for j in range(len(linrComb)):# M runs over N
+                Mhs = np.array(linrComb[j])
+                diffreal = np.sum((Mhs-Nhs)*w_omega)
+                if(diffreal == 0):
+                    DE_MN[i,j] = 0
+                else:
+                    DE_MN[i,j] = 1/diffreal
+            for j in range(i,len(linrComb)):# M runs over N half
+                sumofoperator = 0.0
+                Mhs = np.array(linrComb[j])
+                n = np.maximum(Nhs,Mhs)
+                diff = np.abs(Nhs-Mhs)
+                for ii in range(nmode):
+                    for jj in range(nmode):
+                        for kk in range(nmode):
+                            multplyQ3 = 1
+                            eachcount3 = Counter([ii,jj,kk])
+                            for modeidx3 in range(nmode):
+                                if(diff[modeidx3]>=maxorder-1):#magic number we set maxorder = 5 (number of operators:partial Q, Q, Q2, Q3, Q4.)
+                                    multplyQ3 = 0
+                                    break
+                                numberofmodeinFC = eachcount3[modeidx3]
+                                multplyQ3 *= Evlst[modeidx3,numberofmodeinFC,n[modeidx3],diff[modeidx3]]
+                            multplyQ3*=FCQ3[ii,jj,kk]/6
+                            sumofoperator += multplyQ3
+                            for ll in range(nmode):
+                                multplyQ4 = 1
+                                eachcount = Counter([ii,jj,kk,ll])
+                                for modeidx in range(nmode):
+                                    if(diff[modeidx]>=maxorder):
+                                        multplyQ4 = 0
+                                        break
+                                    numberofmodeinFC = eachcount[modeidx]
+                                    multplyQ4 *= Evlst[modeidx,numberofmodeinFC,n[modeidx],diff[modeidx]]
+                                multplyQ4*=FCQ4[ii,jj,kk,ll]/24
+                                sumofoperator += multplyQ4
+                V_NM[i,j] = V_NM[j,i]=sumofoperator
+            np.save("./data/V_NM"+str(maxn)+".npy",V_NM)
+            np.save("./data/DE_MN"+str(maxn)+".npy",DE_MN)
+
 
     def loopfn(self,n,maxn):
         if n>1:
