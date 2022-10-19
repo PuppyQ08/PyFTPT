@@ -14,20 +14,27 @@ class Numerical:
     def __init__(self,nmode):
 
         Ehbykb = 3.1577464*100000
-        Temprt = np.array([100,10**2.5,1000,10**3.5,10000,100000,1000000])#,10000000,100000000])
-        #Temprt = np.array([10000000])
+        #Temprt = np.array([100,10**2.5,1000,10**3.5,10000,100000,1000000])#,10000000,100000000])
+        #Temprt = np.array([10,30,60,100,300,600,1000,3000,6000,10000,100000])#,10000,100000,1000000])
+        Temprt = np.array([100000])
         Temprt = Temprt/Ehbykb
         w,FCQ3,FCQ4 = self.readSindoPES("./data/prop_no_3.hs",nmode)
         for ii in range(len(Temprt)):
+            beta = 1/(Temprt[ii])
             print("::::::::::::::")
             #ret12 = self.GFnumeric(w,Temprt[ii],FCQ3,FCQ4,nmode)
-            ret12 = self.SQnumeric(w,Temprt[ii],FCQ3,FCQ4,nmode)
-            retOmg0 = self.Bose_EinsteinStat(Temprt[ii],w)
-            #print(retOmg0+ret12)
+            #ret12 = self.SQnumeric(w,beta,FCQ3,FCQ4,nmode)
+            ret12 = self.U_SQnumeric(w,Temprt[ii],FCQ3,FCQ4,nmode)
+            #retOmg0 = self.Bose_EinsteinStat(Temprt[ii],w)
+            p0 = self.SQnumeric(w,beta,FCQ3,FCQ4,nmode)
+            p1 = self.SQnumeric(w,beta+0.001,FCQ3,FCQ4,nmode)
+            p_1 = self.SQnumeric(w,beta-0.001,FCQ3,FCQ4,nmode)
+            ret = p0+ beta*(p1-p_1)/0.002
+            print("second U numerical derivative resuls is ")
+            print(ret)
 
 
-    def SQnumeric(self,w,Temprt,FCQ3,FCQ4,nmode):
-        beta = 1/(Temprt)
+    def SQnumeric(self,w,beta,FCQ3,FCQ4,nmode):
         f = np.zeros(w.shape)
         for i in range(len(w)):
             f[i] = 1/(math.exp(beta*w[i])-1)
@@ -55,14 +62,18 @@ class Numerical:
             for j in range(nmode):
                 A1 += FCQ4[i,i,j,j]*(2*f[i]+1)*(2*f[j]+1)/8
                 for k in range(nmode):
-                    B2D += -FCQ4[i,i,j,j]*FCQ4[i,i,k,k]*(2*f[j]+1)*(2*f[k]+1)*(f[i]+1/2)/w[i]/8 
+                    #B2D += -FCQ4[i,i,j,j]*FCQ4[i,i,k,k]*(2*f[j]+1)*(2*f[k]+1)*(f[i]+1/2)/w[i]/8 
                     #B2D += -beta*FCQ4[i,i,j,j]*FCQ4[i,i,k,k]*(2*f[j]+1)*(2*f[k]+1)*(2*f[i]**2+2*f[i]+1)/2
                     A2 += -FCQ3[i,j,j]*FCQ3[i,k,k]*(2*f[j]+1)*(2*f[k]+1)/w[i]/4     
-                    C2 += -FCQ3[i,j,k]**2*((f[i]*f[j]+f[j]*f[k]+f[i]*f[k]+f[i]+f[j]+f[k]+1)/(w[i]+w[j]+w[k])-(f[i]*f[j]+f[j]*f[k]-f[i]*f[k]+f[j])/(w[j]-w[i]-w[k])-(f[i]*f[j]-f[k]*f[j]-f[i]*f[k]-f[k])/(w[j]+w[i]-w[k])-(f[k]*f[j]-f[i]*f[j]-f[i]*f[k]-f[i])/(w[j]-w[i]+w[k]))/6
+                    C2 += FCQ3[i,j,k]**2*(-(f[i]*f[j]+f[j]*f[k]+f[i]*f[k]+f[i]+f[j]+f[k]+1)/(w[i]+w[j]+w[k])/6 + (f[i]*f[j]*(f[k]+1) - (f[i]+1)*(f[j]+1)*f[k])/(w[i]+w[j]-w[k])/2)
                     for l in range(nmode):
                         if(i!=j):
                             #B2N+= -FCQ4[i,j,k,k]*FCQ4[i,j,l,l]*(2*f[k]+1)*(2*f[l]+1)*(w[i]*(2*f[j]+1) - w[j]*(2*f[i]+1))/(w[i]**2-w[j]**2)/8
-                            B2N +=  FCQ4[i,j,k,k]*FCQ4[i,j,l,l]*(2*f[k]+1)*(2*f[l]+1)*(- (f[i]+f[j]+1)/(w[i]+w[j]) + (f[j]-f[i])/(w[i]-w[j])/2)/8
+                            #B2N +=  FCQ4[i,j,k,k]*FCQ4[i,j,l,l]*(2*f[k]+1)*(2*f[l]+1)*(- (f[i]+f[j]+1)/(w[i]+w[j]) + (f[j]-f[i])/(w[i]-w[j])/2)/8
+                            B2D += FCQ4[i,j,k,k]*FCQ4[i,j,l,l]*(2*f[k]+1)*(2*f[l]+1)*f[i]*(f[j]+1)/(w[i]-w[j])/4
+                        if(i==j):
+                            B2N -= beta*FCQ4[i,j,k,k]*FCQ4[i,j,l,l]*(2*f[k]+1)*(2*f[l]+1)*f[i]*(f[j]+1)/8
+                        B2D +=FCQ4[i,j,k,k]*FCQ4[i,j,l,l]*(2*f[k]+1)*(2*f[l]+1)*(f[i]*f[j]- (f[i]+1)*(f[j]+1))/(w[i]+w[j])/8
                         D4 += -FCQ4[i,j,k,l]**2*((f[k]+1)*(f[i]+1)*(f[l]+1)*(f[j]+1)-f[i]*f[j]*f[k]*f[l])/(w[i]+w[j]+w[k]+w[l])/24
                         D3 += -FCQ4[i,j,k,l]**2*(f[l]*f[k]*(f[j]+f[i]+1)+f[l]*(f[i]+1)*(f[j]+1)-f[i]*f[j]*f[k])/(w[i]+w[j]+w[k]-w[l])/6
                         #if (-w[i] + w[j] - w[k] + w[l]!= 0 ):
@@ -76,17 +87,91 @@ class Numerical:
                         #    D2degen+= beta*FCQ4[i,j,k,l]**2*(f[i]*f[l]*(f[k]+f[j]+1)-f[j]*f[k]*(f[i]+f[l]+1))/24/2
 
                         if (w[i] + w[j] - w[k] - w[l]!= 0 ):
-                            D5 += -FCQ4[i,j,k,l]**2*(f[k]*f[l]*(f[j]+f[i]+1)-f[i]*f[j]*(f[l]+f[k]+1))/(w[i]+w[j]-w[k]-w[l])/16
+                            D5 += FCQ4[i,j,k,l]**2*(f[i]*f[j]*(f[l]+1)*(f[k]+1))/(w[i]+w[j]-w[k]-w[l])/4
                         else:
                             #print(beta*FCQ4[i,j,k,l]**2*(f[k]*f[l]*(f[j]+f[i]+1)+f[i]*f[j]*(f[l]+f[k]+1))/16/2)
-                            D5degen+= -beta*FCQ4[i,j,k,l]**2*(f[k]*f[l]*(f[j]+1)*(f[i]+1)+f[i]*f[j]*(f[l]+1)*(f[k]+1))/16/2 
+                            D5degen+= -beta*FCQ4[i,j,k,l]**2*(f[i]*f[j]*(f[l]+1)*(f[k]+1)) /8
+        GFresult3rd = A2 + C2 
+        GFresult4th = B2N +B2D +D3 +D4 +D5 + D5degen
+        ret= GFresult4th+GFresult3rd
+        ##print("degen is",D7degen+D5degen+D2degen)
+        #print("first",A1)
+        ##print(A1)
+        #print("second Omg",GFresult4th+GFresult3rd)
+        ##print(GFresult4th+GFresult3rd+D7degen+D5degen+D2degen)
+        return ret
+
+    def U_SQnumeric(self,w,Temprt,FCQ3,FCQ4,nmode):
+        beta = 1/(Temprt)
+        f = np.zeros(w.shape)
+        for i in range(len(w)):
+            f[i] = 1/(math.exp(beta*w[i])-1)
+        #print("checking f",f)
+        #second order diagram:
+        Atest = 0
+        A1  = 0
+        A2  = 0
+        B2N = 0
+        B2D = 0
+        C2  = 0
+        D1  = 0
+        D2  = 0
+        D3  = 0
+        D4  = 0
+        D5  = 0
+        D6  = 0
+        D7  = 0
+        D8  = 0
+        D7degen= 0
+        D5degen= 0
+        D2degen= 0
+        count= 0
+        for i in range(nmode):
+            for j in range(nmode):
+                A1 += FCQ4[i,i,j,j]*((2*f[i]+1)*(2*f[j]+1)/8 - beta*w[i]*f[i]*(f[i]+1)*(2*f[j]+1)/2)
+                for k in range(nmode):
+                    #B2D += -FCQ4[i,i,j,j]*FCQ4[i,i,k,k]*(2*f[j]+1)*(2*f[k]+1)*(f[i]+1/2)/w[i]/8 
+                    #B2D += -beta*FCQ4[i,i,j,j]*FCQ4[i,i,k,k]*(2*f[j]+1)*(2*f[k]+1)*(2*f[i]**2+2*f[i]+1)/2
+                    A2 += -FCQ3[i,j,j]*FCQ3[i,k,k]*((2*f[j]+1)*(2*f[k]+1)/w[i]/4 - beta*w[j]*f[j]*(f[j]+1)*(2*f[k]+1))#check    
+                    C2 += FCQ3[i,j,k]**2*((f[i]*f[j]*f[k]-(f[i]+1)*(f[j]+1)*(f[k]+1))/(w[i]+w[j]+w[k])/6 + (f[i]*f[j]*(f[k]+1) - (f[i]+1)*(f[j]+1)*f[k])/(w[i]+w[j]-w[k])/2)
+                    C2 -= beta*FCQ3[i,j,k]**2*((w[i]*f[i]*(f[i]+1)*f[j]*f[k])/(w[i]+w[j]+w[k])/2 - (w[i]*f[i]*(f[i]+1)*(f[j]+1)*(f[k]+1))/(w[i]+w[j]+w[k])/2)
+                    C2 -= beta*FCQ3[i,j,k]**2*((w[i]*f[i]*(f[i]+1)*f[j]*(f[k]+1))/(w[i]+w[j]-w[k]) + (w[k]*f[i]*f[j]*f[k]*(f[k]+1))/(w[i]+w[j]-w[k])/2)
+                    C2 += beta*FCQ3[i,j,k]**2*((w[i]*f[i]*(f[i]+1)*(f[j]+1)*f[k])/(w[i]+w[j]-w[k]) + (w[k]*(f[i]+1)*(f[j]+1)*f[k]*(f[k]+1))/(w[i]+w[j]-w[k])/2)
+                    for l in range(nmode):
+                        if(i!=j):
+                            B2N += FCQ4[i,j,k,k]*FCQ4[i,j,l,l]*(2*f[k]+1)*(2*f[l]+1)*f[i]*(f[j]+1)/(w[i]-w[j])/4#check
+                            B2N -= beta*FCQ4[i,j,k,k]*FCQ4[i,j,l,l]*(2*f[k]+1)*(2*f[l]+1)*f[i]*(f[j]+1)*(w[i]*(f[i]+1)+w[j]*f[j])/(w[i]-w[j])/4
+                            B2N -= beta*FCQ4[i,j,k,k]*FCQ4[i,j,l,l]*f[k]*(f[k]+1)*(2*f[l]+1)*w[k]*f[i]*(f[j]+1)/(w[i]-w[j])
+
+                        if(i==j):
+                            B2D -= (beta)*FCQ4[i,j,k,k]*FCQ4[i,j,l,l]*(2*f[k]+1)*(2*f[l]+1)*f[i]*(f[j]+1)/4#check
+                            B2D += beta*beta*FCQ4[i,j,k,k]*FCQ4[i,j,l,l]*(2*f[k]+1)*(2*f[l]+1)*f[i]*(f[j]+1)*(w[i]*(f[i]+1)+w[j]*f[j])/8
+                            B2D += beta*beta*FCQ4[i,j,k,k]*FCQ4[i,j,l,l]*f[k]*(f[k]+1)*(2*f[l]+1)*w[k]*f[i]*(f[j]+1)/2
+
+                        B2N +=FCQ4[i,j,k,k]*FCQ4[i,j,l,l]*(2*f[k]+1)*(2*f[l]+1)*(f[i]*f[j]- (f[i]+1)*(f[j]+1))/(w[i]+w[j])/8#check
+                        B2N +=beta*FCQ4[i,j,k,k]*FCQ4[i,j,l,l]*(2*f[k]+1)*(2*f[l]+1)*w[i]*f[i]*(f[i]+1)/(w[i]+w[j])/4
+                        B2N -=beta*FCQ4[i,j,k,k]*FCQ4[i,j,l,l]*(f[i]*f[j]-(f[i]+1)*(f[j]+1))*(2*f[l]+1)*w[k]*f[k]*(f[k]+1)/(w[i]+w[j])/2
+
+                        D4 -= FCQ4[i,j,k,l]**2*((f[k]+1)*(f[i]+1)*(f[l]+1)*(f[j]+1)-f[i]*f[j]*f[k]*f[l])/(w[i]+w[j]+w[k]+w[l])/24#check
+                        D4 += beta*FCQ4[i,j,k,l]**2*(w[i]*f[i]*(f[k]+1)*(f[i]+1)*(f[l]+1)*(f[j]+1)- w[i]*f[i]*(f[i]+1)*f[j]*f[k]*f[l])/(w[i]+w[j]+w[k]+w[l])/6
+                        D3 += -FCQ4[i,j,k,l]**2*((f[k]+1)*f[l]*(f[i]+1)*(f[j]+1)-f[i]*f[j]*f[k]*(f[l]+1))/(w[i]+w[j]+w[k]-w[l])/6
+                        D3 -= beta*FCQ4[i,j,k,l]**2*w[l]*f[l]*(f[l]+1)*(f[i]*f[j]*f[k]- (f[i]+1)*(f[j]+1)*(f[k]+1))/(w[i]+w[j]+w[k]-w[l])/6
+                        D3 -= beta*FCQ4[i,j,k,l]**2*w[i]*f[i]*(f[i]+1)*(f[j]*f[k]*(f[l]+1)- (f[j]+1)*(f[k]+1)*f[l])/(w[i]+w[j]+w[k]-w[l])/2
+                        if (w[i] + w[j] - w[k] - w[l]!= 0 ):
+                            D5 += FCQ4[i,j,k,l]**2*(f[i]*f[j]*(f[l]+1)*(f[k]+1))/(w[i]+w[j]-w[k]-w[l])/4#check
+                            D5 -= beta*FCQ4[i,j,k,l]**2*f[i]*f[j]*(f[k]+1)*(f[l]+1)*(w[i]*(f[i]+1)+w[k]*f[k])/(w[i]+w[j]-w[k]-w[l])/2
+                        else:
+                            #print(beta*FCQ4[i,j,k,l]**2*(f[k]*f[l]*(f[j]+f[i]+1)+f[i]*f[j]*(f[l]+f[k]+1))/16/2)
+                            D5degen+= -(beta)*FCQ4[i,j,k,l]**2*(f[i]*f[j]*(f[l]+1)*(f[k]+1)) /4#check
+                            D5degen+= beta*beta*FCQ4[i,j,k,l]**2*f[i]*f[j]*(f[k]+1)*(f[l]+1)*(w[i]*(f[i]+1)+w[k]*f[k])/4
+
         GFresult3rd = A2 + C2 
         GFresult4th = B2N +B2D +D3 +D4 +D5 + D5degen
         ret= A1+GFresult4th+GFresult3rd
         #print("degen is",D7degen+D5degen+D2degen)
-        print("first",A1)
+        print("first U",A1)
         #print(A1)
-        print("second",GFresult4th+GFresult3rd)
+        #print("second",GFresult4th+GFresult3rd)
         #print(GFresult4th+GFresult3rd+D7degen+D5degen+D2degen)
         return ret
 
@@ -117,13 +202,6 @@ class Numerical:
         count= 0
         for i in range(nmode):
             for j in range(nmode):
-                Atest+=FCQ4[i,i,j,j]/8
-                #print("test case")
-                #print(FCQ4[i,i,j,j])
-                #print(2*f[i]+1)
-                #print(2*f[j]+1)
-                #print((2*f[i]+1)*(2*f[j]+1))
-                #print("test case done")
                 A1 += FCQ4[i,i,j,j]*(2*f[i]+1)*(2*f[j]+1)/8
                 for k in range(nmode):
                     B2D += -FCQ4[i,i,j,j]*FCQ4[i,i,k,k]*(2*f[j]+1)*(2*f[k]+1)*(f[i]+1/2)/w[i]/8 
@@ -160,6 +238,7 @@ class Numerical:
         print("second",GFresult4th+GFresult3rd)
         #print(GFresult4th+GFresult3rd+D7degen+D5degen+D2degen)
         return ret
+
     def readSindoPES(self,filepath,nmode):
         w_omega = np.zeros(nmode)
         FCQ3 = np.zeros((nmode,nmode,nmode)) #Coefficient in Q (normal coordinates)
@@ -257,6 +336,7 @@ class Numerical:
         GP_Omg = 0
         for eachw in w_omega:
             GP_Omg += 0.5*eachw +  math.log(1-math.exp(-b_beta*eachw))/b_beta
+        print("Omg0",GP_Omg)
         #internal energy
         IE_U = 0
         for eachw in w_omega:
@@ -265,7 +345,8 @@ class Numerical:
         entropy_S = 0
         for eachw in w_omega:
             entropy_S += - math.log(1-math.exp(-b_beta*eachw)) + eachw*math.exp(-b_beta*eachw)/(Temprt*(1-math.exp(-b_beta*eachw)))
-        print("total OMG",GP_Omg)
+        #print("OMG0",GP_Omg)
+        print("U0",IE_U)
         return GP_Omg
 
 test =  Numerical(3)

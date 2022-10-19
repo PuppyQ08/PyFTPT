@@ -22,7 +22,7 @@ class Numerical:
         for i in range(len(w)):
             f[i] = 1/(math.exp(beta*w[i])-1)
 
-        self.FTPTnumeric(w,f,FCQ3,FCQ4,nmode)
+        #self.FTPTnumeric(w,f,FCQ3,FCQ4,nmode)
         self.GFnumeric(w,f,FCQ3,FCQ4,nmode)
 
 #S: singly D:doubly T:triply Q:quadruply the name match with the ones in the table:S01:1.01
@@ -150,7 +150,9 @@ class Numerical:
         #print(D11+D12+D15+D16)
         #print(D07+D08)
 
-
+    '''
+    This agrees with Second quantization derivation so we do it together
+    '''
     def GFnumeric(self,w,f,FCQ3,FCQ4,nmode):
         #second order diagram:
         A1  = 0
